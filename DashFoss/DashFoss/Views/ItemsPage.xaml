@@ -4,7 +4,7 @@
              x:Class="DashFoss.Views.ItemsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:DashFoss.ViewModels"  
-             xmlns:model="clr-namespace:DashFoss.Models"  
+             xmlns:model="clr-namespace:DashFoss.Models" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>
@@ -18,10 +18,37 @@
         <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Posts}"
                 SelectionMode="None">
+            
+            <CollectionView.Resources>
+                <DataTemplate x:DataType="{x:Type model:HtmlTextBit}" x:Key="HtmlTextBitDataTemplate">
+                    <Label Text="{Binding html}" TextType="Html"></Label>
+                </DataTemplate>
+
+                <DataTemplate x:DataType="{x:Type model:ImageBit}" x:Key="ImageDataTemplate">
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="image:"></Label>
+                        <Label Text="{Binding Url}"></Label>
+                        <Image Source="{Binding Url}"></Image>
+                        <Label Text="end of image"></Label>
+                    </StackLayout>
+                </DataTemplate>
+
+                <DataTemplate x:DataType="{x:Type model:BlogNameBit}" x:Key="BlogNameTemplate">
+                    <Label Text="{Binding BlogName}"></Label>
+                </DataTemplate>
+
+                <xamlbits:PostBitDataTemplateSelector x:Key="BitTemplateSelector"
+                                        BlogNameTextBitTemplate="{StaticResource BlogNameTemplate}"
+                                        HtmlTextBitTemplate="{StaticResource HtmlTextBitDataTemplate}"
+                                        ImageBitTemplate="{StaticResource ImageDataTemplate}"
+                                                                          >
+
+                </xamlbits:PostBitDataTemplateSelector>
+            </CollectionView.Resources>
+            
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-
-                    <Frame Margin="1" Padding="3, 6, 3, 6">
+                    <Frame Margin="100" Padding="3, 6, 3, 6">
                         <StackLayout Padding="10" x:DataType="model:TumblrPost" BackgroundColor="{StaticResource PostBackground}" >
                             <Label Text="{Binding Author}" 
                                 LineBreakMode="NoWrap" 
@@ -31,6 +58,10 @@
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
                                 FontSize="13" />
+
+                            <CollectionView ItemsSource="{Binding Bits}" ItemTemplate="{StaticResource BitTemplateSelector}">
+                            </CollectionView>
+                            
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"
@@ -41,26 +72,6 @@
                         </StackLayout>
                     </Frame>
                 </DataTemplate>
-                
-                <!--<DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:Item">
-                        <Label Text="{Binding Text}" 
-                            LineBreakMode="NoWrap" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
-                        <Label Text="{Binding Description}" 
-                            LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
-                            FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"		
-                                CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
-                </DataTemplate>-->
             </CollectionView.ItemTemplate>
         </CollectionView>
     </RefreshView>

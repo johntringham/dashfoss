@@ -10,5 +10,7 @@ namespace DashFoss.Models
         public string Content { get; set; }
 
         public string Id { get; set; }
+
+        public List<PostBit> Bits { get; set; }
     }
 }

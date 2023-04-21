@@ -1,24 +1,30 @@
 ﻿using DashFoss.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace DashFoss.Services
 {
     public class TumblrDashboardPostsDataStore : IDataStore<TumblrPost>
     {
-
+        private readonly TumblrTalker talker;
         List<TumblrPost> posts;
 
         public TumblrDashboardPostsDataStore()
         {
-            this.posts = new List<TumblrPost>()
-            {
-                new TumblrPost() { Content = "hi", Author="greg" },
-                new TumblrPost() { Content = "hi", Author="greg" },
-                new TumblrPost() { Content = "hi", Author="greg" },
-            };
+            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+            this.talker = DependencyService.Get<TumblrTalker>();
+
+            //this.posts = new List<TumblrPost>()
+            //{
+            //    new TumblrPost() { Content = "hi", Author="greg" },
+            //    new TumblrPost() { Content = "hi", Author="greg" },
+            //    new TumblrPost() { Content = "hi", Author="greg" },
+            //};
         }
         
         public Task<bool> AddItemAsync(TumblrPost item)
@@ -38,8 +44,12 @@ namespace DashFoss.Services
 
         public async Task<IEnumerable<TumblrPost>> GetItemsAsync(bool forceRefresh = false)
         {
-            return await Task.FromResult(this.posts);
+            //return await Task.FromResult(this.posts);
+
+            var posts = await talker.GetPosts();
+            return posts;
         }
+
 
         public Task<bool> UpdateItemAsync(TumblrPost item)
         {

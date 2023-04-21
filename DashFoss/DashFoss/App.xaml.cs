@@ -15,6 +15,7 @@ namespace DashFoss
 
             DependencyService.Register<MockDataStore>();
             DependencyService.Register<TumblrDashboardPostsDataStore>();
+            DependencyService.Register<TumblrTalker>();
             MainPage = new AppShell();
         }
 
