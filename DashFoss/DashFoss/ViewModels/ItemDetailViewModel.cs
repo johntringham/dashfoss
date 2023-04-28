@@ -41,17 +41,7 @@ namespace DashFoss.ViewModels
 
         public async void LoadItemId(string itemId)
         {
-            try
-            {
-                var item = await DataStore.GetItemAsync(itemId);
-                Id = item.Id;
-                Content = item.Content;
-                //Description = item.Description;
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            
         }
     }
 }

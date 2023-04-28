@@ -10,7 +10,7 @@ namespace DashFoss.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<TumblrPost> DataStore => DependencyService.Get<IDataStore<TumblrPost>>();
+        //public IDataStore<TumblrPost> DataStore => DependencyService.Get<IDataStore<TumblrPost>>();
 
         bool isBusy = false;
         public bool IsBusy

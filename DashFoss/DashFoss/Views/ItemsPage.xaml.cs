@@ -21,12 +21,27 @@ namespace DashFoss.Views
             InitializeComponent();
 
             BindingContext = _viewModel = new ItemsViewModel();
+
+            ItemsListView.Scrolled += Scrolled;
+        }
+
+        private void Scrolled(object sender, ItemsViewScrolledEventArgs e)
+        {
+            if(e.LastVisibleItemIndex > _viewModel.Posts.Count - 2)
+            {
+                _viewModel.LoadMorePosts();
+            }
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }
