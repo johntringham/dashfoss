@@ -83,45 +83,52 @@ namespace DashFoss.Services
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
         {
             var body = p.Body;
+            var title = p.Title;
+
+            var bits = new List<PostBit>();
+
+            if (title != null && title.Length != 0)
+            {
+                bits.Add(new HtmlTextBit() { html = $"<h1>{title}</h1>" });
+            }
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(body);
+            var blockNodes = doc.DocumentNode.SelectNodes("//blockquote");
 
-            string previousPerson = null;
-
-            foreach(var node in doc.DocumentNode.SelectNodes("//blockquote"))
+            if (blockNodes != null)
             {
-                /*
-                 * <p>
-                        <a class="tumblr_blog" href="https://www.tumblr.com/blog/view/modosexo/712354533996724224">modosexo</a>:
-                    </p>
-                    <blockquote>
-                        beef borger 
-                    </blockquote>
-                 * 
-                 */
-
-                // html is old scool nesting, we want names before content
-                if(previousPerson != null)
+                string previousPerson = null;
+                foreach (var node in blockNodes)
                 {
-                    var blogName = doc.CreateElement("p");
-                    blogName.AddClass("RealBlogName");
-                    blogName.InnerHtml = previousPerson;
+                    /*
+                     * <p>
+                            <a class="tumblr_blog" href="https://www.tumblr.com/blog/view/modosexo/712354533996724224">modosexo</a>:
+                        </p>
+                        <blockquote>
+                            beef borger 
+                        </blockquote>
+                     * 
+                     */
 
-                    node.ParentNode.InsertAfter(blogName, node);
+                    // html is old scool nesting, we want names before content
+                    if (previousPerson != null)
+                    {
+                        var blogName = doc.CreateElement("p");
+                        blogName.AddClass("RealBlogName");
+                        blogName.InnerHtml = previousPerson;
+
+                        node.ParentNode.InsertAfter(blogName, node);
+                    }
+
+                    // find the "tumblr_blog" class above to get who said this shit
+                    var siblings = node.ParentNode.ChildNodes.Where(n => n.Name != "#text").ToList();
+                    var indexOfThis = siblings.IndexOf(node);
+                    var immeediatelyBefore = siblings[indexOfThis - 1];
+                    var whoSaidThis = immeediatelyBefore.ChildNodes[0].InnerHtml; // shaky stuff here...
+                    previousPerson = whoSaidThis;
                 }
-
-                // find the "tumblr_blog" class above to get who said this shit
-                var siblings = node.ParentNode.ChildNodes.Where(n => n.Name != "#text").ToList();
-                var indexOfThis = siblings.IndexOf(node);
-                var immeediatelyBefore = siblings[indexOfThis - 1];
-                var whoSaidThis = immeediatelyBefore.ChildNodes[0].InnerHtml; // shaky stuff here...
-                previousPerson = whoSaidThis;
             }
-
-            var bits = new List<PostBit>();
-            
-            
 
             foreach(var node in doc.DocumentNode.Descendants())
             {
@@ -136,12 +143,15 @@ namespace DashFoss.Services
                     {
                         bits.Add(new BlogNameBit() { BlogName = node.InnerHtml });
                     }
-                    if (!node.GetClasses().Any())
+                    else
                     {
+                        //if (!node.GetClasses().Any())
+                        //{
                         if (node.ChildNodes.Any() && !node.ChildNodes[0].HasClass("tumblr_blog"))
                         {
                             bits.Add(new HtmlTextBit() { html = node.OuterHtml });
                         }
+                        //}
                     }
                 }
 

@@ -4,6 +4,7 @@
              x:Class="DashFoss.Views.ItemsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:DashFoss.ViewModels"  
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:model="clr-namespace:DashFoss.Models" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
              x:Name="BrowseItemsPage">
 
@@ -17,6 +18,7 @@
     <RefreshView x:DataType="local:ItemsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Posts}"
+                        ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="None">
             
             <CollectionView.Resources>
@@ -25,12 +27,27 @@
                 </DataTemplate>
 
                 <DataTemplate x:DataType="{x:Type model:ImageBit}" x:Key="ImageDataTemplate">
-                    <StackLayout Orientation="Vertical">
-                        <Label Text="image:"></Label>
-                        <Label Text="{Binding Url}"></Label>
-                        <Image Source="{Binding Url}"></Image>
-                        <Label Text="end of image"></Label>
+                    <!--<Grid BackgroundColor="Black" VerticalOptions="FillAndExpand">-->
+
+                    <!--<Label Text="{Binding Url}"></Label>-->
+                    <!--<Label Text="image:"></Label>-->
+                    <!--<ff:CachedImage Source="{Binding Url}"
+                                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Aspect="Fill"
+                    DownsampleToViewSize="True"></ff:CachedImage>-->
+                    <!--<Label Text="end of image"></Label>-->
+                    <!--</Grid>-->
+                    <StackLayout HorizontalOptions="FillAndExpand"
+                         VerticalOptions="FillAndExpand"
+                         Padding="10" BackgroundColor="Black">
+                        <Image Source="{Binding Url}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="FillAndExpand"
+                            
+                            Aspect="AspectFit"/>   
                     </StackLayout>
+
                 </DataTemplate>
 
                 <DataTemplate x:DataType="{x:Type model:BlogNameBit}" x:Key="BlogNameTemplate">
@@ -48,28 +65,46 @@
             
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="100" Padding="3, 6, 3, 6">
-                        <StackLayout Padding="10" x:DataType="model:TumblrPost" BackgroundColor="{StaticResource PostBackground}" >
-                            <Label Text="{Binding Author}" 
+                    <Frame Padding="3, 6, 3, 6" BackgroundColor="Crimson">
+                        <Grid Padding="10" x:DataType="model:TumblrPost" BackgroundColor="{StaticResource PostBackground}" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Label Grid.Row="0"
+                                Text="{Binding Author}"
                                 LineBreakMode="NoWrap" 
                                 Style="{DynamicResource ListItemTextStyle}" 
                                 FontSize="16" />
-                            <Label Text="{Binding Content}" 
+                            
+                            <Label 
+                                Grid.Row="1"
+                                Text="{Binding Content}" 
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
                                 FontSize="13" />
 
-                            <CollectionView ItemsSource="{Binding Bits}" ItemTemplate="{StaticResource BitTemplateSelector}">
-                            </CollectionView>
+                            <!--<CollectionView 
+                                Grid.Row="2"
+                                ItemsSource="{Binding Bits}" BackgroundColor="DarkRed" ItemTemplate="{StaticResource BitTemplateSelector}">
+                            </CollectionView>-->
+
+                            <FlexLayout Grid.Row="2"
+                                Direction="Column"
+                                        BindableLayout.ItemsSource="{Binding Bits}" BindableLayout.ItemTemplateSelector="{StaticResource BitTemplateSelector}">
+                                
+                            </FlexLayout>
                             
-                            <StackLayout.GestureRecognizers>
+                            <!--<StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"		
                                     CommandParameter="{Binding .}">
                                 </TapGestureRecognizer>
-                            </StackLayout.GestureRecognizers>
-                        </StackLayout>
+                            </StackLayout.GestureRecognizers>-->
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
