@@ -12,11 +12,8 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
-    <!--
-      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
-      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
-    -->
-    <RefreshView x:DataType="local:ItemsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView">
+
+    <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView">
         <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Posts}"
                         ItemSizingStrategy="MeasureAllItems"
@@ -24,17 +21,13 @@
             
             <CollectionView.Resources>
                 <DataTemplate x:DataType="{x:Type model:HtmlTextBit}" x:Key="HtmlTextBitDataTemplate">
-                    <Label Text="{Binding html}" TextType="Html"></Label>
+                    <Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>
                 </DataTemplate>
 
                 <DataTemplate x:DataType="{x:Type model:ImageBit}" x:Key="ImageDataTemplate">
-                    <StackLayout Orientation="Vertical">
-                        <!--<Label Text="img:"/>
-                        <Label Text="{Binding Photo.Width}"/>
-                        <Label Text="{Binding Photo.Height}"/>
-                        <Label Text="{Binding Url}"/>-->
-                        <imagefillwidthforms:AspectRatioContainer PhotoInfo="{Binding Photo}">
-                            <Image Source="{Binding Url}"/>
+                    <StackLayout Orientation="Vertical" Padding="0,5" Margin="0,0,0,0">
+                        <imagefillwidthforms:AspectRatioContainer PhotoInfo="{Binding Photo}" Padding="0" Margin="0">
+                            <Image Source="{Binding Url}" IsAnimationPlaying="True"/>
                         </imagefillwidthforms:AspectRatioContainer>
                     </StackLayout>
                 </DataTemplate>
@@ -47,13 +40,24 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Aspect="AspectFill" HeightRequest="20" WidthRequest="20" Source="{Binding ProfilePictureUrl}"/>
-                        <Label Padding="0" Margin="0" FontAttributes="Bold"  Grid.Column="1" Text="{Binding BlogName}"></Label>
+                        <Label Padding="0" Margin="0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding BlogName}"></Label>
                     </Grid>
                 </DataTemplate>
 
-                <DataTemplate x:DataType="{x:Type model:VideoBit}" x:Key="VideoTemplate">
+                <DataTemplate x:DataType="{x:Type model:QuestionAnswerBit}" x:Key="QuestionAnswerBitTemplate">
+                    <Frame BackgroundColor="DarkCyan" Grid.Row="0">
+                        <StackLayout Orientation="Vertical">
+                            <Label Text="{Binding QuestionAsker, StringFormat='{}{0} asked:'}"></Label>
+                            <FlexLayout Grid.Row="1"
+                                    Direction="Column"
+                                    BindableLayout.ItemsSource="{Binding QuestionBits}" BindableLayout.ItemTemplateSelector="{StaticResource BitTemplateSelector}">
+                            </FlexLayout>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
 
-                    <StackLayout Orientation="Vertical" BackgroundColor="Gray" Padding="2">
+                <DataTemplate x:DataType="{x:Type model:VideoBit}" x:Key="VideoTemplate">
+                    <StackLayout Orientation="Vertical" BackgroundColor="{StaticResource VideoBackgroundColor}" Padding="2">
                         <!--<Label Text="video here :)"></Label>
                         <Label Text="{Binding Url}"></Label>-->
                         <StackLayout.Resources>
@@ -61,7 +65,7 @@
                             <commands:IsPlayingConverter x:Key="IsPlayingButtonLabelConverter"/>
                         </StackLayout.Resources>
                         
-                        <xct:MediaElement IsLooping="True" AutoPlay="False" ShowsPlaybackControls="False" Source="{Binding Url}" WidthRequest="400" HeightRequest="400" x:Name="VideoPlayer"/>
+                        <xct:MediaElement IsLooping="True" Volume="0" AutoPlay="False" ShowsPlaybackControls="False" Source="{Binding Url}" WidthRequest="400" HeightRequest="400" x:Name="VideoPlayer"/>
                         
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -101,38 +105,42 @@
                                         BlogNameTextBitTemplate="{StaticResource BlogNameTemplate}"
                                         HtmlTextBitTemplate="{StaticResource HtmlTextBitDataTemplate}"
                                         VideoBitTemplate="{StaticResource VideoTemplate}"
-                                        ImageBitTemplate="{StaticResource ImageDataTemplate}">
+                                        ImageBitTemplate="{StaticResource ImageDataTemplate}"
+                                        QABitTemplate="{StaticResource QuestionAnswerBitTemplate}" >
 
                 </xamlbits:PostBitDataTemplateSelector>
             </CollectionView.Resources>
             
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="3, 6, 3, 6" BackgroundColor="Crimson">
+                    <Frame Padding="3, 6, 3, 6" BackgroundColor="{StaticResource BehindPostColor}">
                         <Grid Padding="10" x:DataType="model:TumblrPost" BackgroundColor="{StaticResource PostBackground}" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            
-                            <Label Grid.Row="0"
-                                Text="{Binding Author}"
-                                LineBreakMode="NoWrap" 
-                                Style="{DynamicResource ListItemTextStyle}" 
-                                FontSize="16" />
+
+                            <StackLayout Grid.Row="0" Orientation="Horizontal">
+                                <Label
+                                    Text="{Binding Author}"
+                                    LineBreakMode="NoWrap" 
+                                    Style="{DynamicResource ListItemTextStyle}" 
+                                    FontAttributes="Bold"
+                                    FontSize="Title" />
+                                <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom, StringFormat='🔁 {0}'}"/>
+                            </StackLayout>
+                                
                            
                             <FlexLayout Grid.Row="1"
                                 Direction="Column"
                                         BindableLayout.ItemsSource="{Binding Bits}" BindableLayout.ItemTemplateSelector="{StaticResource BitTemplateSelector}">
                             </FlexLayout>
-                            
-                            <!--<StackLayout.GestureRecognizers>
-                                <TapGestureRecognizer 
-                                    NumberOfTapsRequired="1"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"		
-                                    CommandParameter="{Binding .}">
-                                </TapGestureRecognizer>
-                            </StackLayout.GestureRecognizers>-->
+
+                            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft" Grid.Row="2" Margin="0,-15,10,0" HeightRequest="40" WidthRequest="200">
+                                <Label Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="20"/>
+                            </StackLayout>
                         </Grid>
                     </Frame>
                 </DataTemplate>

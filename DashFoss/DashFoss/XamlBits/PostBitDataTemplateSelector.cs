@@ -13,6 +13,7 @@ namespace DashFoss.XamlBits
         public DataTemplate ImageBitTemplate { get; set; }
         public DataTemplate BlogNameTextBitTemplate { get; set; }
         public DataTemplate VideoBitTemplate { get; set; }
+        public DataTemplate QABitTemplate { get; set; }
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
@@ -22,6 +23,7 @@ namespace DashFoss.XamlBits
                 case ImageBit _: return ImageBitTemplate;
                 case BlogNameBit _: return BlogNameTextBitTemplate;
                 case VideoBit _: return VideoBitTemplate;
+                case QuestionAnswerBit _: return QABitTemplate;
             }
 
             throw new InvalidOperationException("no template for that kind  of bit");

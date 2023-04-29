@@ -10,6 +10,10 @@ namespace DashFoss.Models
 
         public long Id { get; set; }
 
+        public long Notes { get; set; }
+
         public List<PostBit> Bits { get; set; }
+
+        public string RebloggedFrom { get; set; }
     }
 }

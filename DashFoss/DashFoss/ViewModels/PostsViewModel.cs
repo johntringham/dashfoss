@@ -2,6 +2,7 @@
 using DashFoss.Services;
 using DashFoss.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -11,10 +12,9 @@ using Xamarin.Forms;
 
 namespace DashFoss.ViewModels
 {
-    public class ItemsViewModel : BaseViewModel
+    public class PostsViewModel : BaseViewModel
     {
         private Item _selectedItem;
-
         public ObservableCollection<TumblrPost> Posts { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
@@ -22,7 +22,7 @@ namespace DashFoss.ViewModels
 
         public TumblrTalker tumblrTalker;
 
-        public ItemsViewModel()
+        public PostsViewModel()
         {
             Title = "Browse";
 
@@ -44,7 +44,7 @@ namespace DashFoss.ViewModels
             try
             {
                 Posts.Clear();
-                var items = await tumblrTalker.GetMostRecentPosts();
+                IEnumerable<TumblrPost> items = await GetMostRecentPosts();
                 foreach (var item in items)
                 {
                     Posts.Add(item);
@@ -60,10 +60,23 @@ namespace DashFoss.ViewModels
             }
         }
 
+        public virtual async Task<IEnumerable<TumblrPost>> GetMostRecentPosts()
+        {
+            return await tumblrTalker.GetMostRecentPosts();
+        }
+
+        public virtual async Task<IEnumerable<TumblrPost>> GetOlderPosts(TumblrPost lastPost)
+        {
+            return await this.tumblrTalker.GetOlderPosts(lastPost.Id);
+        }
+
         public void OnAppearing()
         {
-            IsBusy = true;
-            SelectedItem = null;
+            if(this.Posts.Count == 0)
+            {
+                IsBusy = true;
+                SelectedItem = null;
+            }
         }
 
         public Item SelectedItem
@@ -93,18 +106,20 @@ namespace DashFoss.ViewModels
         bool loadingMorePosts = false;
         internal async void LoadMorePosts()
         {
-            if(loadingMorePosts) return;
-            
+            if (loadingMorePosts) return;
+
             loadingMorePosts = true;
 
             var lastPost = this.Posts.Last();
-            var morePosts = await this.tumblrTalker.GetOlderPosts(lastPost.Id);
-            foreach(var post in morePosts)
+            IEnumerable<TumblrPost> morePosts = await GetOlderPosts(lastPost);
+            foreach (var post in morePosts)
             {
                 this.Posts.Add(post);
             }
 
             loadingMorePosts = false;
         }
+
+        
     }
 }

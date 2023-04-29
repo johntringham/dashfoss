@@ -14,20 +14,20 @@ namespace DashFoss.Views
 {
     public partial class ItemsPage : ContentPage
     {
-        ItemsViewModel _viewModel;
+        PostsViewModel _viewModel => this.BindingContext as PostsViewModel;
 
         public ItemsPage()
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ItemsViewModel();
+            //BindingContext = _viewModel = new PostsViewModel();
 
             ItemsListView.Scrolled += Scrolled;
         }
 
         private void Scrolled(object sender, ItemsViewScrolledEventArgs e)
         {
-            if(e.LastVisibleItemIndex > _viewModel.Posts.Count - 2)
+            if(_viewModel.Posts.Count > 0 && e.LastVisibleItemIndex > _viewModel.Posts.Count - 2)
             {
                 _viewModel.LoadMorePosts();
             }

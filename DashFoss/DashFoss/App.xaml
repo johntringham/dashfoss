@@ -9,7 +9,14 @@
         <ResourceDictionary>
             <Color x:Key="Primary">#2196F3</Color>
 
-            <Color x:Key="PostBackground">AliceBlue</Color>
+            <Color x:Key="TextColor">#e2e2e2</Color>
+
+            
+            <Color x:Key="PostBackground">#1e1e1e</Color>
+            <Color x:Key="BehindPostColor">#121212</Color>
+
+            <Color x:Key="VideoBackgroundColor">#121212</Color>
+
             <Color x:Key="Background">#2222ff</Color>
 
             <Style TargetType="Button">
@@ -19,7 +26,7 @@
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                    <Setter Property="BackgroundColor" Value="#1e1e1e" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Disabled">

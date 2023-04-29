@@ -51,6 +51,18 @@ namespace DashFoss.Models
         public string Url { get; set; }
     }
 
+    public class QuestionAnswerBit : PostBit
+    {
+        public List<PostBit> QuestionBits { get; set; } = new List<PostBit>();
+        public List<PostBit> AnswerBits { get; set; } = new List<PostBit>();
+        public string QuestionAsker { get; set; }
+    }
+
+    public class AudioBit : PostBit
+    {
+
+    }
+
     public class NotImplementBit : HtmlTextBit
     {
         public NotImplementBit(BasePost basePost)
@@ -58,4 +70,6 @@ namespace DashFoss.Models
             this.html = $"UNIMPLEMENTED TYPE: {basePost.GetType().FullName}. thanks :)";
         }
     }
+
+
 }

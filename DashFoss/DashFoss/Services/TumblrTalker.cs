@@ -27,16 +27,10 @@ namespace DashFoss.Services
             Console.WriteLine("created a client, wow");
         }
 
-        //public async Task<string> GetSomething()
-        //{
-        //    var userInfo await client.GetUserInfoAsync();
-        //    return userInfo.UserName;
-        //}
-
         public async Task<IEnumerable<TumblrPost>> GetMostRecentPosts()
         {
             BasePost[] posts;
-            posts = await client.GetDashboardPostsAsync();
+            posts = await client.GetDashboardPostsAsync(includeReblogInfo:true);
             var parsed = posts.Select(p => ParsePost(p));
             return parsed;
         }
@@ -44,7 +38,23 @@ namespace DashFoss.Services
         public async Task<IEnumerable<TumblrPost>> GetOlderPosts(long sinceId)
         {
             BasePost[] posts;
-            posts = await client.GetDashboardPostsAsync(sinceId, DashboardOption.Before);
+            posts = await client.GetDashboardPostsAsync(sinceId, DashboardOption.Before, includeReblogInfo: true);
+            var parsed = posts.Select(p => ParsePost(p));
+            return parsed;
+        }
+
+        public async Task<IEnumerable<TumblrPost>> GetMostRecentPostsForAuthor(string blogName)
+        {
+            var posts = (await client.GetPostsAsync(blogName, includeReblogInfo: true)).Result; // note: not an async hack - just some dumb classes
+
+            var parsed = posts.Select(p => ParsePost(p));
+            return parsed;
+        }
+
+        public async Task<IEnumerable<TumblrPost>> GetOlderPostsForAuthor(string blogName, int ignoreFirst)
+        {
+            BasePost[] posts;
+            posts = (await client.GetPostsAsync(blogName, ignoreFirst, includeReblogInfo: true)).Result;
             var parsed = posts.Select(p => ParsePost(p));
             return parsed;
         }
@@ -52,7 +62,7 @@ namespace DashFoss.Services
         private TumblrPost ParsePost(BasePost post)
         {
             var bits = new List<PostBit>();
-            bits.Add(new HtmlTextBit() { html = $"{post.GetType().Name} - {post.BlogName} " });
+            //bits.Add(new HtmlTextBit() { html = $"{post.GetType().Name} - {post.BlogName} " });
 
             switch (post)
             {
@@ -61,7 +71,12 @@ namespace DashFoss.Services
                     {
                         bits.Add(new ImageBit(photo.OriginalSize.ImageUrl, "desc", photo.OriginalSize));
                     }
-                    bits.Add(new HtmlTextBit() { html = p.Caption });
+
+                    // todo: this messes up links to author blogs
+                    ParseTumblrHtml(bits, p.Caption);
+                    ParseTrails(bits, p.Trails);
+
+                    //bits.Add(new HtmlTextBit() { html = p.Caption });
 
                     break;
 
@@ -72,18 +87,34 @@ namespace DashFoss.Services
 
                 case VideoPost p:
                     bits.Add(new VideoBit(p.VideoUrl));
+                    ParseTrails(bits, p.Trails);
                     break;
 
-                case AnswerPost _:
-                case AudioPost _:
+                case AnswerPost p:
+                    var qaBit = new QuestionAnswerBit();
+                    qaBit.QuestionAsker = p.AskingName;
+
+                    ParseTumblrHtml(qaBit.QuestionBits, p.Question);
+                    ParseTumblrHtml(qaBit.AnswerBits, p.Answer);
+
+                    bits.Add(qaBit);
+                    ParseTrails(bits, p.Trails);
+                    break;
+
+                case AudioPost p:
+                    bits.Add(new NotImplementBit(post));
+                    ParseTrails(bits, post.Trails);
+                    break;
+
                 case ChatPost _:
                 case LinkPost _:
                 case QuotePost _:
                     bits.Add(new NotImplementBit(post));
+                    ParseTrails(bits, post.Trails);
                     break;
             }
 
-            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id };
+            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName };
         }
 
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
@@ -93,67 +124,34 @@ namespace DashFoss.Services
 
             var bits = new List<PostBit>();
 
-            if(!p.Trails.Any())
+            List<Trail> trails = p.Trails;
+
+            if (!trails.Any())
             {
                 bits.Add(new HtmlTextBit() { html = $"<h1>{title}</h1>" });
-                ParseTubmlrHtml(bits, body);
+                ParseTumblrHtml(bits, body);
             }
 
-            foreach (var trail in p.Trails)
-            {
-                bits.Add(new BlogNameBit(trail.Blog.Name, trail.Blog.Theme.HeaderImage));
-
-                var content = trail.ContentRaw;
-                ParseTubmlrHtml(bits, content);
-
-                //foreach (var node in nodesToLookAt)
-                //{
-                //    if (node.Name == "img")
-                //    {
-                //        var width = node.GetAttributeValue("data-orig-width", 100);
-                //        var height = node.GetAttributeValue("data-orig-height", 100);
-                //        bits.Add(new ImageBit(node.GetAttributeValue("src", ""), "text post image", new PhotoInfo() { Height = height, Width = width }));
-                //    }
-                //    else if (node.Name == "#text")
-                //    {
-                //        var text = node.GetDirectInnerText();
-                //        if (text != null && text != "")
-                //        {
-                //            bits.Add(new HtmlTextBit() { html = text });
-                //        }
-                //    }
-                //    else if(node.Name == "a")
-                //    {
-                //        var text = node.GetDirectInnerText();
-                //        if (text != null && text != "")
-                //        {
-                //            bits.Add(new HtmlTextBit() { html = "LINK:" + text });
-                //        }
-                //    }
-                //    else if(node.Name == "figure")
-                //    {
-                //        var npfData = node.GetAttributeValue("data-npf", "");
-                //        if(npfData != null && npfData != "")
-                //        {
-                //            npfData = npfData.Replace("&quot;", "\"");
-                //            var json = JObject.Parse(npfData);
-                //            string figureType = json.SelectToken("type").Value<string>();
-                //            string url = json.SelectToken("url").Value<string>();
-
-                //            if (figureType == "video")
-                //            {
-                //                bits.Add(new VideoBit(url));
-                //            }
-                //        }
-                //    }
-                //}
-            }
-
+            ParseTrails(bits, trails);
 
             return bits;
         }
 
-        private static string ParseTubmlrHtml(List<PostBit> bits, string content)
+        private static void ParseTrails(List<PostBit> bits, List<Trail> trails)
+        {
+            if (trails != null)
+            {
+                foreach (var trail in trails)
+                {
+                    bits.Add(new BlogNameBit(trail.Blog.Name, trail.Blog.Theme.HeaderImage));
+
+                    var content = trail.ContentRaw;
+                    ParseTumblrHtml(bits, content);
+                }
+            }
+        }
+
+        private static string ParseTumblrHtml(List<PostBit> bits, string content)
         {
             content = content.Replace("<p>", "");
             content = content.Replace("</p>", "<br />");

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Shell xmlns="http://xamarin.com/schemas/2014/forms" 
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:DashFoss.Views"
+       xmlns:local="clr-namespace:DashFoss.Views" xmlns:viewmodels="clr-namespace:DashFoss.ViewModels"
        Title="DashFoss"
        x:Class="DashFoss.AppShell">
 
@@ -24,14 +24,45 @@
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="White"/>
             </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
+            <Style TargetType="Editor">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
             <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
 
     <TabBar>
-        <ShellContent Title="About" Icon="icon_about.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
-        <ShellContent Title="Browse" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}" />
+        <ShellContent Title="Browse" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+            <ShellContent.BindingContext>
+                <viewmodels:PostsViewModel/>
+            </ShellContent.BindingContext>
+        </ShellContent>
+        <ShellContent Title="IDK" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+            <ShellContent.BindingContext>
+                <viewmodels:OneBlogPostsViewModel blog="zappablamma"/>
+            </ShellContent.BindingContext>
+        </ShellContent>
+
+        <ShellContent Title="testing" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+            <ShellContent.BindingContext>
+                <viewmodels:OneBlogPostsViewModel blog="whatdottumblrdotcom"/>
+            </ShellContent.BindingContext>
+        </ShellContent>
     </TabBar>
 
     <!--
