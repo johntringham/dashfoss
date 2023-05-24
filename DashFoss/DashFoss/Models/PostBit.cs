@@ -1,5 +1,4 @@
 ﻿using DontPanic.TumblrSharp.Client;
-using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -23,11 +22,6 @@ namespace DashFoss.Models
             Desc = desc;
             Photo = photo;
         }
-    }
-
-    public class HtmlTextBit : PostBit
-    {
-        public string html { get; set; }
     }
 
     public class BlogNameBit : PostBit
@@ -65,9 +59,9 @@ namespace DashFoss.Models
 
     public class NotImplementBit : HtmlTextBit
     {
-        public NotImplementBit(BasePost basePost)
+        public NotImplementBit(BasePost basePost) : base($"UNIMPLEMENTED TYPE: {basePost.GetType().FullName}. thanks :)")
         {
-            this.html = $"UNIMPLEMENTED TYPE: {basePost.GetType().FullName}. thanks :)";
+            
         }
     }
 

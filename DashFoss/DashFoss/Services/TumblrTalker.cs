@@ -9,10 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Xamarin.Forms;
 
 namespace DashFoss.Services
 {
@@ -170,8 +172,15 @@ namespace DashFoss.Services
 
             if (!trails.Any())
             {
-                bits.Add(new HtmlTextBit() { html = $"<h1>{title}</h1>" });
+                bits.Add(new HtmlTextBit($"<h1>{title}</h1>"));
                 ParseTumblrHtml(bits, body);
+            }
+            else
+            {
+                if (title != null && title != string.Empty)
+                {
+                    trails[0].ContentRaw = $"<h1>{title}</h1>{trails[0].ContentRaw}";
+                }
             }
 
             ParseTrails(bits, trails);
@@ -193,11 +202,24 @@ namespace DashFoss.Services
             }
         }
 
-        private static string ParseTumblrHtml(List<PostBit> bits, string content)
+        private static bool AncestorsInclude(HtmlNode node, params string[] nodeTypes)
         {
-            content = content.Replace("<p>", "");
-            content = content.Replace("</p>", "<br />");
+            return node.AncestorsAndSelf().Any(t => nodeTypes.Contains(t.Name));
+        }
 
+        private static string GetLinkHref(HtmlNode node)
+        {
+            var aNode = node.AncestorsAndSelf().FirstOrDefault(t => t.Name == "a");
+            if(aNode != null)
+            {
+                return aNode.GetAttributeValue("href", null);
+            }
+
+            return null;
+        }
+
+        private static void ParseTumblrHtml(List<PostBit> bits, string content)
+        {
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(content);
 
@@ -205,32 +227,66 @@ namespace DashFoss.Services
             var nodesToInspect = new Stack<HtmlNode>();
             nodesToInspect.Push(documentNode);
 
+            HtmlTextBit currentTextBit = new HtmlTextBit();
+
             while (nodesToInspect.Count > 0)
             {
                 var node = nodesToInspect.Pop();
+
+                if(node.Name == "li")
+                {
+                    currentTextBit.AddNewLine();
+                    currentTextBit.AddString("  •  ");
+                    foreach (var child in node.ChildNodes.Reverse())
+                    {
+                        nodesToInspect.Push(child);
+                    }
+
+                    continue;
+                }
+
+                if (node.Name == "p" || node.Name == "h1" || node.Name == "h2")
+                {
+                    currentTextBit.AddNewLine();
+                    currentTextBit.AddNewLine();
+                    foreach (var child in node.ChildNodes.Reverse())
+                    {
+                        nodesToInspect.Push(child);
+                    }
+
+                    continue;
+                }
+
+                if (node.Name == "#text")
+                {
+                    // some kind of text or link or something idk
+                    var text = node.GetDirectInnerText();
+                    if (text != null && text != "")
+                    {
+                        currentTextBit.AddString(text, 
+                            GetLinkHref(node),
+                            AncestorsInclude(node, "b", "strong"),
+                            AncestorsInclude(node, "i", "em"),
+                            AncestorsInclude(node, "strike"),
+                            AncestorsInclude(node, "h2", "bigger"),
+                            AncestorsInclude(node, "h1"),
+                            AncestorsInclude(node, "blockquote", "pre")
+                            );
+                    }
+                    continue;
+                }
+
                 if (node.Name == "img")
                 {
+                    ResetHtmlContainer();
+
                     var width = node.GetAttributeValue("data-orig-width", 100);
                     var height = node.GetAttributeValue("data-orig-height", 100);
                     bits.Add(new ImageBit(node.GetAttributeValue("src", ""), "text post image", new PhotoInfo() { Height = height, Width = width }));
+                    continue;
                 }
-                else if (node.Name == "#text")
-                {
-                    var text = node.GetDirectInnerText();
-                    if (text != null && text != "")
-                    {
-                        bits.Add(new HtmlTextBit() { html = text });
-                    }
-                }
-                else if (node.Name == "a")
-                {
-                    var text = node.GetDirectInnerText();
-                    if (text != null && text != "")
-                    {
-                        bits.Add(new HtmlTextBit() { html = "LINK:" + node.OuterHtml });
-                    }
-                }
-                else if (node.Name == "figure")
+
+                if (node.Name == "figure")
                 {
                     var npfData = node.GetAttributeValue("data-npf", "");
                     if (npfData != null && npfData != "")
@@ -242,27 +298,102 @@ namespace DashFoss.Services
 
                         if (figureType == "video")
                         {
+                            ResetHtmlContainer();
+
                             bits.Add(new VideoBit(url));
-                        }
-                    }
-                    else
-                    {
-                        foreach (var child in node.ChildNodes.Reverse())
-                        {
-                            nodesToInspect.Push(child);
+                            continue;
                         }
                     }
                 }
-                else
+
+                foreach (var child in node.ChildNodes.Reverse())
                 {
-                    foreach (var child in node.ChildNodes.Reverse())
-                    {
-                        nodesToInspect.Push(child);
-                    }
+                    nodesToInspect.Push(child);
                 }
             }
 
-            return content;
+            ResetHtmlContainer();
+
+            void ResetHtmlContainer()
+            {
+                currentTextBit.Spans = currentTextBit.Spans.SkipWhile(sp => string.IsNullOrWhiteSpace(sp.Text)).ToList();
+                // anything else - images, video, something idk 
+                // in that case we want to finish up the html collection
+                if (currentTextBit.Spans.Count > 0)
+                {
+                    bits.Add(currentTextBit);
+                    currentTextBit = new HtmlTextBit();
+                }
+            }
         }
+        //content = content.Replace("<p>", "");
+        //content = content.Replace("</p>", "<br />");
+
+        //var doc = new HtmlAgilityPack.HtmlDocument();
+        //doc.LoadHtml(content);
+
+        //var documentNode = doc.DocumentNode;
+        //var nodesToInspect = new Stack<HtmlNode>();
+        //nodesToInspect.Push(documentNode);
+
+        //while (nodesToInspect.Count > 0)
+        //{
+        //    var node = nodesToInspect.Pop();
+        //    if (node.Name == "img")
+        //    {
+        //        var width = node.GetAttributeValue("data-orig-width", 100);
+        //        var height = node.GetAttributeValue("data-orig-height", 100);
+        //        bits.Add(new ImageBit(node.GetAttributeValue("src", ""), "text post image", new PhotoInfo() { Height = height, Width = width }));
+        //    }
+        //    else if (node.Name == "#text")
+        //    {
+        //        var text = node.GetDirectInnerText();
+        //        if (text != null && text != "")
+        //        {
+        //            bits.Add(new HtmlTextBit() { html = text });
+        //        }
+        //    }
+        //    else if (node.Name == "a")
+        //    {
+        //        var text = node.GetDirectInnerText();
+        //        if (text != null && text != "")
+        //        {
+        //            bits.Add(new HtmlTextBit() { html = "LINK:" + node.OuterHtml });
+        //        }
+        //    }
+        //    else if (node.Name == "figure")
+        //    {
+        //        var npfData = node.GetAttributeValue("data-npf", "");
+        //        if (npfData != null && npfData != "")
+        //        {
+        //            npfData = npfData.Replace("&quot;", "\"");
+        //            var json = JObject.Parse(npfData);
+        //            string figureType = json.SelectToken("type").Value<string>();
+        //            string url = json.SelectToken("url").Value<string>();
+
+        //            if (figureType == "video")
+        //            {
+        //                bits.Add(new VideoBit(url));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var child in node.ChildNodes.Reverse())
+        //            {
+        //                nodesToInspect.Push(child);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var child in node.ChildNodes.Reverse())
+        //        {
+        //            nodesToInspect.Push(child);
+        //        }
+        //    }
+        //}
+
+        //return content;
+        //}
     }
 }
