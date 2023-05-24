@@ -18,8 +18,11 @@
                 ItemsSource="{Binding Posts}"
                         ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="None">
-            
-            <CollectionView.Resources>
+
+             <CollectionView.Resources>
+
+                <commands:InlineLinkClickCommand x:Key="InlineLinkClickCommand"/>
+
                 <DataTemplate x:DataType="{x:Type model:HtmlTextBit}" x:Key="HtmlTextBitDataTemplate">
                     <Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>
                 </DataTemplate>
@@ -29,6 +32,20 @@
                         <imagefillwidthforms:AspectRatioContainer PhotoInfo="{Binding Photo}" Padding="0" Margin="0">
                             <Image Source="{Binding Url}" IsAnimationPlaying="True"/>
                         </imagefillwidthforms:AspectRatioContainer>
+
+                        <Label TextType="Html">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="click me">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{StaticResource InlineLinkClickCommand}"
+                                                CommandParameter="https://xamarin.com" />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                </FormattedString>
+                            </Label.FormattedText>
+                            
+                        </Label>
                     </StackLayout>
                 </DataTemplate>
 
