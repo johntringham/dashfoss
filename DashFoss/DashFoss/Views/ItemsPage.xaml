@@ -9,9 +9,9 @@
              xmlns:model="clr-namespace:DashFoss.Models" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits" xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms" xmlns:commands="clr-namespace:DashFoss.Commands"
              x:Name="BrowseItemsPage">
 
-    <ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
     <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView">
         <CollectionView x:Name="ItemsListView"
@@ -156,7 +156,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <ScrollView Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                    <Label TextColor="{StaticResource SubtleTextColor}" LineBreakMode="NoWrap" Text="#has asdas asdasdh tag #crashtag #peepeepoopoo #long tag that a makes no sense but on tumblr thats just how it works"></Label>
+                                    <Label TextColor="{StaticResource SubtleTextColor}" LineBreakMode="NoWrap" Text="{Binding AllTags}"></Label>
                                 </ScrollView>
                                 
                                 <Label Grid.Row="1" Grid.Column="0" Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="20"/>

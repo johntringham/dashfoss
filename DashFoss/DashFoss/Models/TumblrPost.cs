@@ -2,6 +2,7 @@
 using DontPanic.TumblrSharp.Client;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DashFoss.Models
@@ -23,6 +24,10 @@ namespace DashFoss.Models
         public string AvatarUrl => $"https://api.tumblr.com/v2/blog/{Author}/avatar/48";
 
         public BasePost BasePost { get; set; }
+
+        public List<string> Tags { get; set; }
+
+        public string AllTags => string.Join(" ", Tags.Select(t => "#" + t));
 
         public bool Liked
         { 

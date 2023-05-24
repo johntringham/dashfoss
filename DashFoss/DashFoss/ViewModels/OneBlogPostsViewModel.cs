@@ -10,6 +10,11 @@ namespace DashFoss.ViewModels
     {
         public string blog { get; set; }
 
+        public OneBlogPostsViewModel() : base()
+        {
+            this.Title = blog;
+        }
+
         public override async Task<IEnumerable<TumblrPost>> GetMostRecentPosts()
         {
             return await tumblrTalker.GetMostRecentPostsForAuthor(blog);

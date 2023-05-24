@@ -24,7 +24,7 @@ namespace DashFoss.ViewModels
 
         public PostsViewModel()
         {
-            Title = "Browse";
+            Title = "Dashboard";
 
             Posts = new ObservableCollection<TumblrPost>();
 

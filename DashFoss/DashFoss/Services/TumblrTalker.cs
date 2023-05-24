@@ -115,7 +115,7 @@ namespace DashFoss.Services
                     }
 
                     // todo: this messes up links to author blogs
-                    ParseTumblrHtml(bits, p.Caption);
+                    //ParseTumblrHtml(bits, p.Caption);
                     ParseTrails(bits, p.Trails);
 
                     //bits.Add(new HtmlTextBit() { html = p.Caption });
@@ -156,7 +156,7 @@ namespace DashFoss.Services
                     break;
             }
 
-            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName, BasePost = post };
+            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName, Tags = post.Tags.ToList(), BasePost = post };
         }
 
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
@@ -227,7 +227,7 @@ namespace DashFoss.Services
                     var text = node.GetDirectInnerText();
                     if (text != null && text != "")
                     {
-                        bits.Add(new HtmlTextBit() { html = "LINK:" + text });
+                        bits.Add(new HtmlTextBit() { html = "LINK:" + node.OuterHtml });
                     }
                 }
                 else if (node.Name == "figure")
