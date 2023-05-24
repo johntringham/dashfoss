@@ -1,0 +1,9 @@
+todo: dashfoss
+
+- like button
+- tags
+- links
+- double descriptions on photo posts
+- audio posts
+- (debugging help) - link to actual post (share button?)
+- 

@@ -34,7 +34,7 @@ namespace DashFoss.ViewModels
 
             AddItemCommand = new Command(OnAddItem);
 
-            tumblrTalker = new TumblrTalker();
+            tumblrTalker = DependencyService.Get<TumblrTalker>();
         }
 
         async Task ExecuteLoadItemsCommand()

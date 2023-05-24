@@ -60,6 +60,47 @@ namespace DashFoss.Services
             return parsed;
         }
 
+        public async Task<IEnumerable<TumblrPost>> GetLikes()
+        {
+            var posts = (await client.GetLikesAsync()).Result; // note: not an async hack - just some dumb classes
+            var parsed = posts.Select(p => ParsePost(p));
+            return parsed;
+        }
+
+        public async Task<IEnumerable<TumblrPost>> GetOlderLikes(int ignoreFirst)
+        {
+            BasePost[] posts;
+            posts = (await client.GetLikesAsync(ignoreFirst)).Result;
+            var parsed = posts.Select(p => ParsePost(p));
+            return parsed;
+        }
+
+        public async Task DoLike(TumblrPost post)
+        {
+            if (long.TryParse(post.Id, out long id))
+            {
+                await client.LikeAsync(id, post.BasePost.ReblogKey);
+                post.Liked = true;
+            }
+            else
+            {
+                throw new InvalidOperationException("post has funky id number, dunno why. number:" + post.Id);
+            }
+        }
+
+        public async Task DoUnlike(TumblrPost post)
+        {
+            if (long.TryParse(post.Id, out long id))
+            {
+                await client.UnlikeAsync(id, post.BasePost.ReblogKey);
+                post.Liked = false;
+            }
+            else
+            {
+                throw new InvalidOperationException("post has funky id number, dunno why. number:" + post.Id);
+            }
+        }
+
         private TumblrPost ParsePost(BasePost post)
         {
             var bits = new List<PostBit>();

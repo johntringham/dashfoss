@@ -221,7 +221,6 @@ namespace DontPanic.TumblrSharp.Client
             }
 
             MethodParameterSet parameters = new MethodParameterSet();
-            parameters.Add("api_key", apiKey);
             parameters.Add("offset", startIndex, 0);
             parameters.Add("limit", count, 0);
             parameters.Add("reblog_info", includeReblogInfo, false);
@@ -230,7 +229,7 @@ namespace DontPanic.TumblrSharp.Client
             parameters.Add("tag", tag);
 
             return CallApiMethodAsync<Posts>(
-              new BlogMethod(blogName, methodName, null, HttpMethod.Get, parameters),
+              new BlogMethod(blogName, methodName, OAuthToken, HttpMethod.Get, parameters),
               CancellationToken.None);
         }
 
@@ -285,13 +284,12 @@ namespace DontPanic.TumblrSharp.Client
                 throw new ArgumentOutOfRangeException("id", "id must be greater or equal to zero.");
 
             MethodParameterSet parameters = new MethodParameterSet();
-            parameters.Add("api_key", apiKey);
             parameters.Add("id", id, 0);
             parameters.Add("reblog_info", includeReblogInfo, false);
             parameters.Add("notes_info", includeNotesInfo, false);
 
             return CallApiMethodAsync<Posts, BasePost>(
-              new BlogMethod(blogName, "posts", null, HttpMethod.Get, parameters),
+              new BlogMethod(blogName, "posts", OAuthToken, HttpMethod.Get, parameters),
               p => p.Result.FirstOrDefault(),
               CancellationToken.None);
         }

@@ -1,11 +1,12 @@
-﻿using DontPanic.TumblrSharp.Client;
+﻿using DashFoss.ViewModels;
+using DontPanic.TumblrSharp.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DashFoss.Models
 {
-    public class TumblrPost
+    public class TumblrPost : BaseViewModel
     {
         public string Author { get; set; }
 
@@ -27,11 +28,12 @@ namespace DashFoss.Models
         { 
             get
             {
-                return BasePost.Liked == "true"; // ???
+                return BasePost.Liked == "True"; // ???
             }
             set
             {
-                BasePost.Liked = value ? "true" : "false";
+                BasePost.Liked = value ? "True" : "False";
+                OnPropertyChanged(nameof(Liked));
             }
         }
     }

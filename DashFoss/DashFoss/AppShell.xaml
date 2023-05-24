@@ -52,6 +52,11 @@
                 <viewmodels:PostsViewModel/>
             </ShellContent.BindingContext>
         </ShellContent>
+        <ShellContent Title="LIKES" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+            <ShellContent.BindingContext>
+                <viewmodels:LikesViewModel/>
+            </ShellContent.BindingContext>
+        </ShellContent>
         <ShellContent Title="IDK" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
             <ShellContent.BindingContext>
                 <viewmodels:OneBlogPostsViewModel blog="zappablamma"/>
@@ -61,6 +66,12 @@
         <ShellContent Title="testing" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
             <ShellContent.BindingContext>
                 <viewmodels:OneBlogPostsViewModel blog="whatdottumblrdotcom"/>
+            </ShellContent.BindingContext>
+        </ShellContent>
+
+        <ShellContent Title="hungwy" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+            <ShellContent.BindingContext>
+                <viewmodels:OneBlogPostsViewModel blog="hungwy"/>
             </ShellContent.BindingContext>
         </ShellContent>
     </TabBar>

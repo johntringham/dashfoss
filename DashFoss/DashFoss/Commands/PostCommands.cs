@@ -1,4 +1,5 @@
 ﻿using DashFoss.Models;
+using DashFoss.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,21 +19,23 @@ namespace DashFoss.Commands
             return true;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
             var post = parameter as TumblrPost;
             if (post != null)
             {
-                post.Liked = !post.Liked;
+                var desiredLike = !post.Liked;
 
-                //if (post.Liked)
-                //{
-                //    post.Unlike();
-                //}
-                //else
-                //{
-                //    post.Like();
-                //}
+                var tumblrTalker = DependencyService.Get<TumblrTalker>();
+
+                if (desiredLike)
+                {
+                    await tumblrTalker.DoLike(post);
+                }
+                else
+                {
+                    await tumblrTalker.DoUnlike(post);
+                }
             }
         }
     }
@@ -41,8 +44,8 @@ namespace DashFoss.Commands
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var post = parameter as TumblrPost;
-            if(post != null && post.Liked)
+            var liked = (bool)value;
+            if(liked)
             {
                 return "❤";
             }
@@ -50,8 +53,6 @@ namespace DashFoss.Commands
             {
                 return "🤍";
             }
-
-            throw new NotImplementedException();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

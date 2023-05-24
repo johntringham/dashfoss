@@ -156,13 +156,13 @@
                                 </Grid.ColumnDefinitions>
 
                                 <ScrollView Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                    <Label TextColor="{StaticResource SubtleTextColor}" LineBreakMode="NoWrap" Text="#hash tag #crashtag #peepeepoopoo #long tag that a makes no sense but on tumblr thats just how it works"></Label>
+                                    <Label TextColor="{StaticResource SubtleTextColor}" LineBreakMode="NoWrap" Text="#has asdas asdasdh tag #crashtag #peepeepoopoo #long tag that a makes no sense but on tumblr thats just how it works"></Label>
                                 </ScrollView>
                                 
                                 <Label Grid.Row="1" Grid.Column="0" Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="20"/>
-                                <Label Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Center" Text="{Binding Liked, Converter={StaticResource IsLikedConverter}, ConverterParameter={Binding .}}">
+                                <Label Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Center" Text="{Binding Liked, Converter={StaticResource IsLikedConverter}}">
                                     <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{StaticResource LikePostCommand}" />
+                                        <TapGestureRecognizer Command="{StaticResource LikePostCommand}" CommandParameter="{Binding}" />
                                     </Label.GestureRecognizers>
                                 </Label>
                             </Grid>
