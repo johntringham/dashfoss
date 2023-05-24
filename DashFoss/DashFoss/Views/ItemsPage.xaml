@@ -114,6 +114,11 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Padding="3, 6, 3, 6" BackgroundColor="{StaticResource BehindPostColor}">
+                        <Frame.Resources>
+                            <commands:IsLikedConverter x:Key="IsLikedConverter"/>
+                            <commands:LikePostCommand x:Key="LikePostCommand"/>
+                        </Frame.Resources>
+                        
                         <Grid Padding="10" x:DataType="model:TumblrPost" BackgroundColor="{StaticResource PostBackground}" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -122,25 +127,45 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <StackLayout Grid.Row="0" Orientation="Horizontal">
-                                <Label
-                                    Text="{Binding Author}"
-                                    LineBreakMode="NoWrap" 
-                                    Style="{DynamicResource ListItemTextStyle}" 
-                                    FontAttributes="Bold"
-                                    FontSize="Title" />
-                                <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom, StringFormat='🔁 {0}'}"/>
+                            <StackLayout Orientation="Horizontal" Grid.Row="0" HeightRequest="60">
+                                <Image Source="{Binding AvatarUrl}" WidthRequest="50" HeightRequest="50" VerticalOptions="CenterAndExpand"/>
+                                <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand">
+                                    <Label
+                                        Text="{Binding Author}"
+                                        LineBreakMode="NoWrap" 
+                                        Style="{DynamicResource ListItemTextStyle}" 
+                                        FontAttributes="Bold"
+                                        FontSize="Subtitle" />
+                                    <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom, StringFormat='🔁 {0}'}" IsVisible="{Binding WasReblogged}"/>
+                                </StackLayout>
                             </StackLayout>
-                                
                            
                             <FlexLayout Grid.Row="1"
                                 Direction="Column"
                                         BindableLayout.ItemsSource="{Binding Bits}" BindableLayout.ItemTemplateSelector="{StaticResource BitTemplateSelector}">
                             </FlexLayout>
 
-                            <StackLayout Orientation="Horizontal" FlowDirection="RightToLeft" Grid.Row="2" Margin="0,-15,10,0" HeightRequest="40" WidthRequest="200">
-                                <Label Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="20"/>
-                            </StackLayout>
+                            <Grid Grid.Row="2" Margin="0,-45,10,0" HeightRequest="90" WidthRequest="200">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ScrollView Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                    <Label TextColor="{StaticResource SubtleTextColor}" LineBreakMode="NoWrap" Text="#hash tag #crashtag #peepeepoopoo #long tag that a makes no sense but on tumblr thats just how it works"></Label>
+                                </ScrollView>
+                                
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="20"/>
+                                <Label Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Center" Text="{Binding Liked, Converter={StaticResource IsLikedConverter}, ConverterParameter={Binding .}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{StaticResource LikePostCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
                         </Grid>
                     </Frame>
                 </DataTemplate>

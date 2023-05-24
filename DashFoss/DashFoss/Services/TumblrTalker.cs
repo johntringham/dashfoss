@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -114,7 +115,7 @@ namespace DashFoss.Services
                     break;
             }
 
-            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName };
+            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName, BasePost = post };
         }
 
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
@@ -143,7 +144,7 @@ namespace DashFoss.Services
             {
                 foreach (var trail in trails)
                 {
-                    bits.Add(new BlogNameBit(trail.Blog.Name, trail.Blog.Theme.HeaderImage));
+                    bits.Add(new BlogNameBit(trail.Blog.Name));
 
                     var content = trail.ContentRaw;
                     ParseTumblrHtml(bits, content);

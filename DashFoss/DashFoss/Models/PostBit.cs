@@ -35,10 +35,10 @@ namespace DashFoss.Models
         public string BlogName { get; set; }
         public string ProfilePictureUrl { get; set; }
 
-        public BlogNameBit(string blogName, string imageUrl)
+        public BlogNameBit(string blogName)
         {
             BlogName = blogName;
-            ProfilePictureUrl = imageUrl;
+            ProfilePictureUrl = $"https://api.tumblr.com/v2/blog/{blogName}/avatar/48";
         }
     }
 
