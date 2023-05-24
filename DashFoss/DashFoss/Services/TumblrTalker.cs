@@ -36,7 +36,7 @@ namespace DashFoss.Services
             return parsed;
         }
 
-        public async Task<IEnumerable<TumblrPost>> GetOlderPosts(long sinceId)
+        public async Task<IEnumerable<TumblrPost>> GetOlderPosts(string sinceId)
         {
             BasePost[] posts;
             posts = await client.GetDashboardPostsAsync(sinceId, DashboardOption.Before, includeReblogInfo: true);

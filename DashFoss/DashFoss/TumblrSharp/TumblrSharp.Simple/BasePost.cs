@@ -55,7 +55,7 @@ namespace TumblrSharp.Simple
 		/// The unique ID of this post.
 		/// </summary>
         [JsonProperty(PropertyName = "id")]
-        public long Id { get; private set; }
+        public string Id { get; private set; }
 
         /// <summary>
 		/// The tags for this post, if any.

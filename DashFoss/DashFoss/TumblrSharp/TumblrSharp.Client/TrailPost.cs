@@ -11,7 +11,7 @@ namespace DontPanic.TumblrSharp.Client
         /// id from post
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// compare trailposts

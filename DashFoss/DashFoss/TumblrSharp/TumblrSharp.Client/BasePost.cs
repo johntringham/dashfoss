@@ -27,7 +27,7 @@ namespace DontPanic.TumblrSharp.Client
 		///The post identifier.
 		/// </summary>
         [JsonProperty(PropertyName = "id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
 		/// <summary>
 		/// The url of the post.

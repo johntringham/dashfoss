@@ -1739,13 +1739,13 @@ namespace DontPanic.TumblrSharp.Client
         ///	</item>
         /// </list>
         /// </exception>
-        public Task<BasePost[]> GetDashboardPostsAsync(long sinceId = 0, long startIndex = 0, int count = 20, PostType type = PostType.All, bool includeReblogInfo = false, bool includeNotesInfo = false)
+        public Task<BasePost[]> GetDashboardPostsAsync(string sinceId = "0", long startIndex = 0, int count = 20, PostType type = PostType.All, bool includeReblogInfo = false, bool includeNotesInfo = false)
         {
             if (disposed)
                 throw new ObjectDisposedException("TumblrClient");
 
-            if (sinceId < 0)
-                throw new ArgumentOutOfRangeException("sinceId", "sinceId must be greater or equal to zero.");
+            if (sinceId == null || sinceId == string.Empty)
+                throw new ArgumentOutOfRangeException("sinceId", "sinceId should exist");
 
             if (startIndex < 0)
                 throw new ArgumentOutOfRangeException("startIndex", "startIndex must be greater or equal to zero.");
@@ -1758,7 +1758,7 @@ namespace DontPanic.TumblrSharp.Client
 
             MethodParameterSet parameters = new MethodParameterSet();
             parameters.Add("type", type.ToString().ToLowerInvariant(), "all");
-            parameters.Add("since_id", sinceId, 0);
+            parameters.Add("since_id", sinceId, "0");
             parameters.Add("offset", startIndex, 0);
             parameters.Add("limit", count, 0);
             parameters.Add("reblog_info", includeReblogInfo, false);
@@ -1826,13 +1826,13 @@ namespace DontPanic.TumblrSharp.Client
         ///	</item>
         /// </list>
         /// </exception>
-        public Task<BasePost[]> GetDashboardPostsAsync(long Id, DashboardOption drashboardType, long startIndex = 0, int count = 20, PostType type = PostType.All, bool includeReblogInfo = false, bool includeNotesInfo = false)
+        public Task<BasePost[]> GetDashboardPostsAsync(string Id, DashboardOption drashboardType, long startIndex = 0, int count = 20, PostType type = PostType.All, bool includeReblogInfo = false, bool includeNotesInfo = false)
         {
             if (disposed)
                 throw new ObjectDisposedException("TumblrClient");
 
-            if (Id < 0)
-                throw new ArgumentOutOfRangeException("ID", "Id must be greater or equal to zero.");
+            if (Id == null || Id == string.Empty || Id == "0")
+                throw new ArgumentOutOfRangeException("sinceId", "sinceId should exist and be non-zero");
 
             if (startIndex < 0)
                 throw new ArgumentOutOfRangeException("startIndex", "startIndex must be greater or equal to zero.");
@@ -1850,10 +1850,10 @@ namespace DontPanic.TumblrSharp.Client
             switch (drashboardType)
             {
                 case DashboardOption.Before:
-                    parameters.Add("before_id", Id, 0);
+                    parameters.Add("before_id", Id, "0");
                     break;
                 case DashboardOption.After:
-                    parameters.Add("after_id", Id, 0);
+                    parameters.Add("after_id", Id, "0");
                     break;
             }
 
