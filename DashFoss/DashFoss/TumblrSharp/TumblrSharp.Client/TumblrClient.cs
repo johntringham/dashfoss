@@ -1379,7 +1379,8 @@ namespace DontPanic.TumblrSharp.Client
                 { "offset", startIndex, 0 },
                 { "limit", count, 0 },
                 { "before", before.HasValue ? DateTimeHelper.ToTimestamp(before.Value).ToString() : null, null },
-                { "after", after.HasValue ? DateTimeHelper.ToTimestamp(after.Value).ToString() : null, null }
+                { "after", after.HasValue ? DateTimeHelper.ToTimestamp(after.Value).ToString() : null, null },
+                { "reblog_info", true }
             };
 
             return CallApiMethodAsync<Likes>(

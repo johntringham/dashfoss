@@ -17,7 +17,7 @@ namespace DashFoss.Models
 
         public List<PostBit> Bits { get; set; }
 
-        public string RebloggedFrom { get; set; }
+        public string RebloggedFrom { get; set; }   
 
         public bool WasReblogged => RebloggedFrom != null && RebloggedFrom != string.Empty;
 
@@ -28,6 +28,8 @@ namespace DashFoss.Models
         public List<string> Tags { get; set; }
 
         public string AllTags => string.Join(" ", Tags.Select(t => "#" + t));
+
+        public bool GotTags => Tags.Count > 0;
 
         public bool Liked
         { 

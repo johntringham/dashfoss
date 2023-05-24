@@ -8,11 +8,16 @@ namespace DashFoss.ViewModels
 {
     public class OneBlogPostsViewModel : PostsViewModel
     {
-        public string blog { get; set; }
+        private string _blog;
 
-        public OneBlogPostsViewModel() : base()
+        public string blog
         {
-            this.Title = blog;
+            get => _blog; 
+            set
+            {
+                _blog = value;
+                this.Title = _blog;
+            }
         }
 
         public override async Task<IEnumerable<TumblrPost>> GetMostRecentPosts()

@@ -1,6 +1,7 @@
 ﻿using DashFoss.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xamarin.CommunityToolkit.Markup;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -85,6 +86,9 @@ namespace DashFoss.Models
         {
             get
             {
+                var lastSpan = this.Spans.Last();
+                lastSpan.Text = lastSpan.Text + "  "; // hack - nbsp
+
                 // todo: check if this gets hit loads. if so then we need a way of only doing this once rather than recomputing
                 var formattedString = new FormattedString();
                 foreach(var span in Spans)

@@ -7,17 +7,20 @@
     -->
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Primary">#4949f3</Color>
+            <Color x:Key="Secondary">#4949f3</Color>
 
-            <Color x:Key="TextColor">#e2e2e2</Color>
+            <Color x:Key="TextColor">#ffffdf</Color>
+            <Color x:Key="BodyTextColor">#e2e2d2</Color>
             <Color x:Key="SubtleTextColor">#a2a2a2</Color>
+            <Color x:Key="QuestionAskerColor">#8999ff</Color>
             
             <Color x:Key="PostBackground">#1e1e1e</Color>
             <Color x:Key="BehindPostColor">#121212</Color>
 
             <Color x:Key="VideoBackgroundColor">#121212</Color>
 
-            <Color x:Key="Background">#2222ff</Color>
+            <Color x:Key="Background">#4949f3</Color>
 
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>
