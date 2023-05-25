@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DontPanic.TumblrSharp.OAuth;
 using Flurl.Http.Configuration;
+using Xamarin.Forms;
 
 namespace DontPanic.TumblrSharp
 {
@@ -335,7 +336,7 @@ namespace DontPanic.TumblrSharp
 
 							switch (response.StatusCode)
 							{
-								case System.Net.HttpStatusCode.Unauthorized :
+								case System.Net.HttpStatusCode.Unauthorized:
 									{
 										break;
 									}

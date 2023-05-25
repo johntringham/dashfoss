@@ -25,6 +25,8 @@ namespace DashFoss.Models
 
         public BasePost BasePost { get; set; }
 
+        public string PostUrl => BasePost.Url;
+
         public List<string> Tags { get; set; }
 
         public string AllTags => string.Join(" ", Tags.Select(t => "#" + t));

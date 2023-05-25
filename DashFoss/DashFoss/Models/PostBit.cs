@@ -52,6 +52,14 @@ namespace DashFoss.Models
         public string QuestionAsker { get; set; }
     }
 
+    public class IFrameBit : PostBit
+    {
+        public int Width { get; set; } = 400;
+        public int Height { get; set; } = 400;
+
+        public string Url { get; set; }
+    }
+
     public class AudioBit : PostBit
     {
 

@@ -2,6 +2,7 @@
 using DontPanic.TumblrSharp;
 using DontPanic.TumblrSharp.Client;
 using DontPanic.TumblrSharp.OAuth;
+using FFImageLoading.Helpers.Gif;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,6 +15,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 using Xamarin.Forms;
 
 namespace DashFoss.Services
@@ -33,56 +35,118 @@ namespace DashFoss.Services
         public async Task<IEnumerable<TumblrPost>> GetMostRecentPosts()
         {
             BasePost[] posts;
-            posts = await client.GetDashboardPostsAsync(includeReblogInfo:true);
+
+            try
+            {
+                posts = await client.GetDashboardPostsAsync(includeReblogInfo: true);
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
+
             var parsed = posts.Select(p => ParsePost(p));
             return parsed;
+        }
+
+        private static async Task DisplayErrorMessage()
+        {
+            await Shell.Current.CurrentPage.DisplayAlert("aw man", "connection failed... :(", "ok");
         }
 
         public async Task<IEnumerable<TumblrPost>> GetOlderPosts(string sinceId)
         {
-            BasePost[] posts;
-            posts = await client.GetDashboardPostsAsync(sinceId, DashboardOption.Before, includeReblogInfo: true);
-            var parsed = posts.Select(p => ParsePost(p));
-            return parsed;
+            try {
+                BasePost[] posts;
+                posts = await client.GetDashboardPostsAsync(sinceId, DashboardOption.Before, includeReblogInfo: true);
+                var parsed = posts.Select(p => ParsePost(p));
+                return parsed;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
         }
 
         public async Task<IEnumerable<TumblrPost>> GetMostRecentPostsForAuthor(string blogName)
         {
-            var posts = (await client.GetPostsAsync(blogName, includeReblogInfo: true)).Result; // note: not an async hack - just some dumb classes
+            try
+            {
+                var posts = (await client.GetPostsAsync(blogName, includeReblogInfo: true)).Result; // note: not an async hack - just some dumb classes
 
-            var parsed = posts.Select(p => ParsePost(p));
-            return parsed;
+                var parsed = posts.Select(p => ParsePost(p));
+                return parsed;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
         }
 
         public async Task<IEnumerable<TumblrPost>> GetOlderPostsForAuthor(string blogName, int ignoreFirst)
         {
-            BasePost[] posts;
-            posts = (await client.GetPostsAsync(blogName, ignoreFirst, includeReblogInfo: true)).Result;
-            var parsed = posts.Select(p => ParsePost(p));
-            return parsed;
+            try
+            {
+                BasePost[] posts;
+                posts = (await client.GetPostsAsync(blogName, ignoreFirst, includeReblogInfo: true)).Result;
+                var parsed = posts.Select(p => ParsePost(p));
+                return parsed;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
         }
 
         public async Task<IEnumerable<TumblrPost>> GetLikes()
         {
-            var posts = (await client.GetLikesAsync()).Result; // note: not an async hack - just some dumb classes
-            var parsed = posts.Select(p => ParsePost(p));
-            return parsed;
+            try
+            {
+                var posts = (await client.GetLikesAsync()).Result; // note: not an async hack - just some dumb classes
+                var parsed = posts.Select(p => ParsePost(p));
+                return parsed;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
         }
 
         public async Task<IEnumerable<TumblrPost>> GetOlderLikes(int ignoreFirst)
         {
             BasePost[] posts;
-            posts = (await client.GetLikesAsync(ignoreFirst)).Result;
-            var parsed = posts.Select(p => ParsePost(p));
-            return parsed;
+
+            try
+            {
+                posts = (await client.GetLikesAsync(ignoreFirst)).Result;
+                var parsed = posts.Select(p => ParsePost(p));
+                return parsed;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return new List<TumblrPost>();
+            }
         }
 
         public async Task DoLike(TumblrPost post)
         {
             if (long.TryParse(post.Id, out long id))
             {
-                await client.LikeAsync(id, post.BasePost.ReblogKey);
-                post.Liked = true;
+                try
+                {
+                    await client.LikeAsync(id, post.BasePost.ReblogKey);
+                    post.Liked = true;
+                }
+                catch (Exception ex)
+                {
+                    await DisplayErrorMessage();
+                }
             }
             else
             {
@@ -94,8 +158,15 @@ namespace DashFoss.Services
         {
             if (long.TryParse(post.Id, out long id))
             {
-                await client.UnlikeAsync(id, post.BasePost.ReblogKey);
-                post.Liked = false;
+                try
+                {
+                    await client.UnlikeAsync(id, post.BasePost.ReblogKey);
+                    post.Liked = false;
+                }
+                catch (Exception ex)
+                {
+                    await DisplayErrorMessage();
+                }
             }
             else
             {
@@ -130,7 +201,23 @@ namespace DashFoss.Services
                     break;
 
                 case VideoPost p:
-                    bits.Add(new VideoBit(p.VideoUrl));
+                    if (p.VideoUrl != null && p.VideoUrl != string.Empty)
+                    {
+                        bits.Add(new VideoBit(p.VideoUrl));
+                    }
+                    else
+                    {
+                        if(p.Player != null && p.Player.Any())
+                        {
+                            var vidPlayer = p.Player.Last();
+                            var doc = new HtmlDocument();
+                            doc.LoadHtml(vidPlayer.EmbedCode);
+
+                            var youtubeElement = doc.DocumentNode.ChildNodes.First().GetAttributeValue("src", null);
+
+                            bits.Add(new IFrameBit() { Url = youtubeElement });
+                        }
+                    }
                     ParseTrails(bits, p.Trails);
                     break;
 
@@ -146,7 +233,19 @@ namespace DashFoss.Services
                     break;
 
                 case AudioPost p:
-                    bits.Add(new NotImplementBit(post));
+                    var player = p.Player;
+                    var xElement = XElement.Parse(player);
+                    var source = xElement.Attribute("src").Value;
+
+                    IFrameBit iframeBit = new IFrameBit() { Url = source };
+
+                    var uri = new Uri(source);
+                    if (uri.Host.EndsWith(".tumblr.com"))
+                    {
+                        iframeBit.Height = 85; // height of that player
+                    }
+
+                    bits.Add(iframeBit);
                     ParseTrails(bits, post.Trails);
                     break;
 
@@ -304,6 +403,12 @@ namespace DashFoss.Services
                             continue;
                         }
                     }
+                }
+
+                if(node.Name == "iframe")
+                {
+                    ResetHtmlContainer();
+                    bits.Add(new IFrameBit() { Url = node.GetAttributeValue("src", ".") });
                 }
 
                 foreach (var child in node.ChildNodes.Reverse())
