@@ -30,7 +30,7 @@ namespace DashFoss.Models
 
             if(href != null)
             {
-                span.ForegroundColor = Color.Crimson;
+                span.ForegroundColor = (Color)Xamarin.Forms.Application.Current.Resources["LinkTextColor"];
                 span.TextDecorations |= TextDecorations.Underline;
 
                 span.GestureRecognizers.Add(new TapGestureRecognizer() { Command = LinkOpeningCommand, CommandParameter = href });

@@ -51,11 +51,11 @@ namespace DashFoss.Commands
             var liked = (bool)value;
             if (liked)
             {
-                return "❤";
+                return SVGHelper.GetSVG("filledheart.svg");
             }
             else
             {
-                return "🤍";
+                return SVGHelper.GetSVG("heart.svg");
             }
         }
 
