@@ -118,6 +118,7 @@ namespace DontPanic.TumblrSharp.Client
                 throw new ArgumentException("Blog name cannot be empty.", "blogName");
 
             MethodParameterSet parameters = new MethodParameterSet();
+            parameters.Add("fields[blogs]", "?followed,name");
             parameters.Add("api_key", apiKey);
 
             return CallApiMethodAsync<BlogInfoResponse, BlogInfo>(
@@ -125,6 +126,27 @@ namespace DontPanic.TumblrSharp.Client
               r => r.Blog,
               CancellationToken.None);
         }
+
+        //public Task<BlogInfo> GetFollowingInfo(string blogName)
+        //{
+        //    if (disposed)
+        //        throw new ObjectDisposedException("TumblrClient");
+
+        //    if (blogName == null)
+        //        throw new ArgumentNullException("blogName");
+
+        //    if (blogName.Length == 0)
+        //        throw new ArgumentException("Blog name cannot be empty.", "blogName");
+
+        //    MethodParameterSet parameters = new MethodParameterSet();
+        //    parameters.Add("api_key", apiKey);
+        //    parameters.Add("fields[blogs]", apiKey);
+
+        //    return CallApiMethodAsync<BlogInfoResponse, BlogInfo>(
+        //      new BlogMethod(blogName, "info", OAuthToken, HttpMethod.Get, parameters),
+        //      r => r.Blog,
+        //      CancellationToken.None);
+        //}
 
         #endregion
 
@@ -450,6 +472,35 @@ namespace DontPanic.TumblrSharp.Client
 
             return CallApiMethodAsync<Followers>(
               new BlogMethod(blogName, "followers", OAuthToken, HttpMethod.Get, parameters),
+              CancellationToken.None);
+        }
+
+        public async Task<Object> GetAreYouFollowing(string blog)
+        {
+            var blogInfo = await GetBlogInfoAsync(blog);
+
+            return "fuck";
+        }
+
+        public Task<Object> GetFollowedByAsync(string blog, string follower)
+        {
+            if (disposed)
+                throw new ObjectDisposedException("TumblrClient");
+
+            if (follower == null)
+                throw new ArgumentNullException("follower");
+
+            if (blog.Length == 0)
+                throw new ArgumentException("Blog name cannot be empty.", "blog");
+
+            if (OAuthToken == null)
+                throw new InvalidOperationException("GetFollowersAsync method requires an OAuth token to be specified.");
+
+            MethodParameterSet parameters = new MethodParameterSet();
+            parameters.Add("query", follower);
+
+            return CallApiMethodAsync<Object>(
+              new BlogMethod(blog, "followed_by", OAuthToken, HttpMethod.Get, parameters),
               CancellationToken.None);
         }
 
@@ -1211,6 +1262,8 @@ namespace DontPanic.TumblrSharp.Client
         }
 
         #endregion
+
+
 
         #endregion
 

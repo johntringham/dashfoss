@@ -13,11 +13,20 @@
     </ContentPage.ToolbarItems>-->
 
     <Grid BackgroundColor="{StaticResource BehindPostColor}">
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions> 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
 
         <Label Text="{Binding BackgroundText}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource SubtleTextColor}"/>
 
-        <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView">
+        <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView"
+                     Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <CollectionView x:Name="ItemsListView"
                     ItemsSource="{Binding Posts}"
                             ItemSizingStrategy="MeasureAllItems"
@@ -217,5 +226,12 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+
+
+        <Button IsVisible="{Binding ShouldShowFollowButton}"
+                Text="{Binding FollowButtonText}"
+                Grid.Row="0" Grid.Column="1"
+                BackgroundColor="{StaticResource Primary}" Margin="5" Command="{Binding FollowUnfollowButtonCommand}">
+        </Button>
     </Grid>
 </ContentPage>

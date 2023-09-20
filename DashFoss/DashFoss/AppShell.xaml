@@ -63,7 +63,7 @@
             </ShellContent.BindingContext>
         </ShellContent>
 
-        <!--<ShellContent Title="testing" Icon="{xamlbits:CustomImageSourceExtension link.svg}" ContentTemplate="{DataTemplate local:ItemsPage}">
+        <ShellContent Title="testing" Icon="{xamlbits:CustomImageSourceExtension link.svg}" ContentTemplate="{DataTemplate local:ItemsPage}">
             <ShellContent.BindingContext>
                 <viewmodels:OneBlogPostsViewModel blog="whatdottumblrdotcom"/>
             </ShellContent.BindingContext>
@@ -73,7 +73,7 @@
             <ShellContent.BindingContext>
                 <viewmodels:OneBlogPostsViewModel blog="hungwy"/>
             </ShellContent.BindingContext>
-        </ShellContent>-->
+        </ShellContent>
     </TabBar>
 
     <!--

@@ -50,6 +50,28 @@ namespace DashFoss.Services
             return parsed;
         }
 
+        public async Task<bool> DoesFollow(string blog)
+        {
+            try
+            {
+                //var userInfo = await client.GetUserInfoAsync();
+
+                //var pfollowsz = await client.GetAreYouFollowing("pukicho");
+                //var followPizza = await client.GetAreYouFollowing("kitzenvoncatzen");
+                //var zfollowsp = await client.GetFollowedByAsync("pukicho", "zappablamma");
+
+                return false;
+
+                //var following = await client.GetFollowingAsync(0, );
+                //return following.Result.Any(f => f.Name == blog);
+            }
+            catch (Exception e)
+            {
+                await DisplayErrorMessage();
+                return false;
+            }
+        }
+
         private static async Task DisplayErrorMessage()
         {
             await Shell.Current.CurrentPage.DisplayAlert("aw man", "connection failed... :(", "ok");
@@ -431,6 +453,17 @@ namespace DashFoss.Services
                 }
             }
         }
+
+        internal Task UnfollowBlog(string blog)
+        {
+            return this.client.UnfollowAsync(blog);
+        }
+
+        internal Task FollowBlog(string blog)
+        {
+            return this.client.FollowAsync(blog);
+        }
+
         //content = content.Replace("<p>", "");
         //content = content.Replace("</p>", "<br />");
 

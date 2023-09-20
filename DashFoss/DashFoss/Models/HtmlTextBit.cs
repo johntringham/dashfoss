@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Xamarin.CommunityToolkit.Markup;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -26,7 +27,7 @@ namespace DashFoss.Models
 
         public void AddString(string str, string href = null, bool bold = false, bool italic = false, bool strike = false, bool h2 = false, bool h1=false, bool quote = false)
         {
-            var span = new Span() { Text = str, FontSize = 16 };
+            var span = new Span() { Text = HttpUtility.HtmlDecode(str), FontSize = 16 };
 
             if(href != null)
             {
