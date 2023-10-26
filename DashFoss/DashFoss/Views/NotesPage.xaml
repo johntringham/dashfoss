@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:DashFoss.ViewModels" xmlns:client="clr-namespace:DontPanic.TumblrSharp.Client"
+             x:Class="DashFoss.Views.NotesPage"
+             BackgroundColor="{StaticResource BehindPostColor}"
+             x:DataType="local:NotesViewModel">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Label Text="hello"/>
+            <Label Text="{Binding Notes.Count}"/>
+            <CollectionView x:Name="ItemsListView"
+                    ItemsSource="{Binding Notes}"
+                    ItemSizingStrategy="MeasureAllItems"
+                    SelectionMode="None">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="client:BaseNote" >
+                        <StackLayout>
+                            <Label Text="{Binding BlogName}"/>
+                            <Label Text="{Binding ReplyText}"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

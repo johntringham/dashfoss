@@ -6,7 +6,10 @@
              xmlns:local="clr-namespace:DashFoss.ViewModels"  
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:model="clr-namespace:DashFoss.Models" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits" xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms" xmlns:commands="clr-namespace:DashFoss.Commands"
+             xmlns:model="clr-namespace:DashFoss.Models"
+             xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
+             xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms"
+             xmlns:commands="clr-namespace:DashFoss.Commands"
              x:Name="BrowseItemsPage">
     <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
@@ -45,7 +48,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:DataType="{x:Type model:ImageBit}" x:Key="ImageDataTemplate">
-                        <StackLayout Orientation="Vertical">
+                        <StackLayout Orientation="Vertical" Margin="0, 5">
                             <imagefillwidthforms:AspectRatioContainer PhotoInfo="{Binding Photo}" Padding="0" Margin="0">
                                 <Grid BackgroundColor="{StaticResource BehindPostColor}">
                                     <Image Source="{Binding Url}" IsAnimationPlaying="True"/>
@@ -55,7 +58,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:DataType="{x:Type model:BlogNameBit}" x:Key="BlogNameTemplate">
-                        <Grid Padding="0" Margin="0,6,0,1">
+                        <Grid Padding="0" Margin="0,10,0,10">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding BlogName}"/>
                             </Grid.GestureRecognizers>
@@ -162,11 +165,13 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10, 6, 10, 6" BorderColor="Black" BackgroundColor="{DynamicResource PostBackground}" x:DataType="model:TumblrPost">
+                        <Frame Padding="5" BackgroundColor="{DynamicResource BehindPostColor}">
+                            <Frame Padding="10, 6, 10, 6" BackgroundColor="{DynamicResource PostBackground}" x:DataType="model:TumblrPost">
                             <Frame.Resources>
-                                <commands:IsLikedConverter x:Key="IsLikedConverter"/>
-                                <commands:LikePostCommand x:Key="LikePostCommand"/>
-                            </Frame.Resources>
+                                    <commands:IsLikedConverter x:Key="IsLikedConverter"/>
+                                    <commands:LikePostCommand x:Key="LikePostCommand"/>
+                                    <commands:OpenNotesCommand x:Key="OpenNotesCommand"/>
+                                </Frame.Resources>
 
                             <StackLayout Orientation="Vertical">
 
@@ -186,11 +191,14 @@
                                                 <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding Author}"/>
                                             </Label.GestureRecognizers>
                                         </Label>
-                                        <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom, StringFormat='🔁 {0}'}" IsVisible="{Binding WasReblogged}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding RebloggedFrom}"/>
-                                            </Label.GestureRecognizers>
-                                        </Label>
+                                        <StackLayout Orientation="Horizontal" IsVisible="{Binding WasReblogged}">
+                                            <Image Scale="0.6" Source="{xamlbits:CustomImageSourceExtension reblog.svg}"></Image>
+                                            <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom}">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding RebloggedFrom}"/>
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </StackLayout>
                                     </StackLayout>
                                     <Label Text="➽" Margin="0,0,10,0" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" TextColor="{StaticResource SubtleTextColor}">
                                         <Label.GestureRecognizers>
@@ -213,14 +221,19 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" VerticalOptions="Center" Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="Small" TextColor="{StaticResource SubtleTextColor}"/>
-                                    <Image Grid.Column="1" WidthRequest="25" Source="{Binding Liked, Converter={StaticResource IsLikedConverter}}">
+                                        <Label Grid.Column="0" VerticalOptions="Center" Text="{Binding NotesCount,StringFormat='{}{0:N0} notes'}" FontSize="Small" TextColor="{StaticResource SubtleTextColor}">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{StaticResource OpenNotesCommand}" CommandParameter="{Binding}"/>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Image Grid.Column="1" WidthRequest="25" Source="{Binding Liked, Converter={StaticResource IsLikedConverter}}">
                                         <Image.GestureRecognizers>
                                             <TapGestureRecognizer Command="{StaticResource LikePostCommand}" CommandParameter="{Binding}" />
                                         </Image.GestureRecognizers>
                                     </Image>
                                 </Grid>
                             </StackLayout>
+                        </Frame>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -15,6 +15,7 @@
     <None Remove="Resources\Images\navigation.svg" />
     <None Remove="Resources\Images\pause.svg" />
     <None Remove="Resources\Images\play.svg" />
+    <None Remove="Resources\Images\reblog.svg" />
     <None Remove="Resources\Images\repeat.svg" />
     <None Remove="Resources\Images\rewind.svg" />
     <None Remove="Resources\Images\test.jpg" />
@@ -33,7 +34,7 @@
     <EmbeddedResource Include="Resources\Images\navigation.svg" />
     <EmbeddedResource Include="Resources\Images\pause.svg" />
     <EmbeddedResource Include="Resources\Images\play.svg" />
-    <EmbeddedResource Include="Resources\Images\repeat.svg" />
+    <EmbeddedResource Include="Resources\Images\reblog.svg" />
     <EmbeddedResource Include="Resources\Images\rewind.svg" />
     <EmbeddedResource Include="Resources\Images\test.jpg" />
     <EmbeddedResource Include="Resources\Images\user.svg" />
@@ -55,6 +56,12 @@
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />  
     <PackageReference Include="Xamarin.Forms.Svg" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\NotesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

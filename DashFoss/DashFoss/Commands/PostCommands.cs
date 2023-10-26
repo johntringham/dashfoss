@@ -2,6 +2,7 @@
 using DashFoss.Services;
 using DashFoss.ViewModels;
 using DashFoss.Views;
+using DontPanic.TumblrSharp.Client;
 using Flurl;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,29 @@ namespace DashFoss.Commands
             page.BindingContext = new OneBlogPostsViewModel() { blog = (string) parameter };
             
             Shell.Current.Navigation.PushAsync(page);
+        }
+    }
+
+    public class OpenNotesCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public async void Execute(object parameter)
+        {
+            var page = new NotesPage();
+            var post = (TumblrPost)parameter;
+
+            var tumblrTalker = DependencyService.Get<TumblrTalker>();
+            await tumblrTalker.LoadNotes(post);
+
+            page.BindingContext = new NotesViewModel() { Post = post };
+
+            await Shell.Current.Navigation.PushAsync(page);
         }
     }
 }

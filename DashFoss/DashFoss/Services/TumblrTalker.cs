@@ -156,6 +156,21 @@ namespace DashFoss.Services
             }
         }
 
+        public async Task<TumblrPost> LoadNotes(TumblrPost post)
+        {
+            try
+            {
+                var newPost = await client.GetPostAsync(post.BasePost.BlogName, long.Parse(post.Id), true, true);
+                post.Notes = newPost.Notes;
+                return post;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return post;
+            }
+        }
+
         public async Task DoLike(TumblrPost post)
         {
             if (long.TryParse(post.Id, out long id))
@@ -279,7 +294,7 @@ namespace DashFoss.Services
                     break;
             }
 
-            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName, Tags = post.Tags.ToList(), BasePost = post };
+            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, NotesCount = post.NotesCount, RebloggedFrom = post.RebloggedFromName, Tags = post.Tags.ToList(), BasePost = post };
         }
 
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
