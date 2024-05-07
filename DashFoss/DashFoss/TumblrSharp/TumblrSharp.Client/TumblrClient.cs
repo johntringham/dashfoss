@@ -316,6 +316,39 @@ namespace DontPanic.TumblrSharp.Client
               CancellationToken.None);
         }
 
+        public Task<Notes> GetNotes(string blogName, long id, string noteType = "all")
+        {
+            // https://www.tumblr.com/docs/en/api/v2#notes---get-notes-for-a-specific-post
+            // notetype or "mode" can be:
+            //"all" loads all notes for the post.
+            //"likes" loads only likes for the post.
+            //"conversation" loads only replies and reblogs with added text commentary, with the rest of the notes(likes, reblogs without commentary) in a rollup_notes field.
+            //"rollup" loads only like and reblog notes for the post in the notes array.
+            //"reblogs_with_tags" loads only the reblog notes for the post, and each note object includes a tags array field(which may be empty).
+            //"replies" (UNDOCUMENTED) just contains replies
+
+            if (disposed)
+                throw new ObjectDisposedException("TumblrClient");
+
+            if (blogName == null)
+                throw new ArgumentNullException("blogName");
+
+            if (blogName.Length == 0)
+                throw new ArgumentException("Blog name cannot be empty.", "blogName");
+
+            if (id < 0)
+                throw new ArgumentOutOfRangeException("id", "id must be greater or equal to zero.");
+
+            MethodParameterSet parameters = new MethodParameterSet();
+            parameters.Add("id", id, 0);
+            parameters.Add("mode", noteType, "all");
+
+            return CallApiMethodAsync<Notes>(
+              new BlogMethod(blogName, "notes", OAuthToken, HttpMethod.Get, parameters),
+              CancellationToken.None);
+        }
+
+
         #endregion
 
         #region GetBlogLikesAsync

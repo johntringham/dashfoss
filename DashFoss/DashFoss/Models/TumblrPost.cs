@@ -33,7 +33,8 @@ namespace DashFoss.Models
 
         public bool GotTags => Tags.Count > 0;
 
-        public List<BaseNote> Notes { get; set; } = new List<BaseNote>();
+        public List<BaseNote> Replies { get; set; } = new List<BaseNote>();
+        public List<BaseNote> ReblogNotes { get; set; } = new List<BaseNote>();
 
         public bool Liked
         { 

@@ -88,7 +88,6 @@ namespace DashFoss.Models
             get
             {
                 var lastSpan = this.Spans.Last();
-                lastSpan.Text = lastSpan.Text + "  "; // hack - nbsp
 
                 // todo: check if this gets hit loads. if so then we need a way of only doing this once rather than recomputing
                 var formattedString = new FormattedString();

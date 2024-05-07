@@ -322,6 +322,7 @@ namespace DontPanic.TumblrSharp
 						var serializer = CreateSerializer(converters);
 						if (response.IsSuccessStatusCode)
 						{
+							// RESPONSE GOES HERE --- bananabread
 							return serializer.Deserialize<TumblrRawResponse<TResult>>(reader).Response;
 						}
 						else

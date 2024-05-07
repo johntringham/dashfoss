@@ -10,6 +10,7 @@ namespace DashFoss.ViewModels
     {
         public TumblrPost Post { get; set; }
 
-        public List<BaseNote> Notes => this.Post.Notes;
+        public List<BaseNote> Replies => this.Post.Replies;
+        public List<BaseNote> Reblogs => this.Post.ReblogNotes;
     }
 }

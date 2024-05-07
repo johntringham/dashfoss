@@ -116,7 +116,6 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ImageButton Source="{xamlbits:CustomImageSourceExtension DashFoss.Resources.Images.rewind.svg}" BackgroundColor="Transparent" Grid.Column="0" CommandParameter="{Reference VideoPlayer}">
@@ -146,7 +145,6 @@
                                     </ImageButton.Command>
                                 </ImageButton>
                                 
-                                <Button BackgroundColor="Transparent" Grid.Column="3" Margin="0" Padding="0" Text="⛶"/>
                             </Grid>
 
                         </StackLayout>

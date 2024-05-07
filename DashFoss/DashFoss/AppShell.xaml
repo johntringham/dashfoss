@@ -57,23 +57,6 @@
                 <viewmodels:LikesViewModel/>
             </ShellContent.BindingContext>
         </ShellContent>
-        <ShellContent Title="me" Icon="{xamlbits:CustomImageSourceExtension link.svg}" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="zappablamma"/>
-            </ShellContent.BindingContext>
-        </ShellContent>
-
-        <ShellContent Title="testing" Icon="{xamlbits:CustomImageSourceExtension link.svg}" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="whatdottumblrdotcom"/>
-            </ShellContent.BindingContext>
-        </ShellContent>
-
-        <ShellContent Title="hungwy" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="hungwy"/>
-            </ShellContent.BindingContext>
-        </ShellContent>
     </TabBar>
 
     <!--

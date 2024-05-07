@@ -111,15 +111,17 @@ namespace DashFoss.Commands
 
         public async void Execute(object parameter)
         {
+
+            var tumblrTalker = DependencyService.Get<TumblrTalker>();
             var page = new NotesPage();
             var post = (TumblrPost)parameter;
 
-            var tumblrTalker = DependencyService.Get<TumblrTalker>();
-            await tumblrTalker.LoadNotes(post);
-
-            page.BindingContext = new NotesViewModel() { Post = post };
+            var tumblrLoadTask = tumblrTalker.LoadNotes(post);
 
             await Shell.Current.Navigation.PushAsync(page);
+            await tumblrLoadTask;
+
+            page.BindingContext = new NotesViewModel() { Post = post };
         }
     }
 }

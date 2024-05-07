@@ -160,8 +160,14 @@ namespace DashFoss.Services
         {
             try
             {
-                var newPost = await client.GetPostAsync(post.BasePost.BlogName, long.Parse(post.Id), true, true);
-                post.Notes = newPost.Notes;
+                var noteType = NoteType.Reply;
+
+                var replies = await this.client.GetNotes(post.BasePost.BlogName, long.Parse(post.Id), "replies");
+                post.Replies = replies.Result.ToList();
+
+                var reblogs = await this.client.GetNotes(post.BasePost.BlogName, long.Parse(post.Id), "reblogs_with_tags");
+                post.ReblogNotes = reblogs.Result.ToList();
+
                 return post;
             }
             catch (Exception ex)

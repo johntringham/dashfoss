@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace DashFoss.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class NotesPage : ContentPage
+    public partial class NotesPage : TabbedPage
     {
         public NotesPage()
         {
