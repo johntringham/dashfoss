@@ -15,7 +15,6 @@ namespace DashFoss
 
             Application.Current.UserAppTheme = OSAppTheme.Light;
 
-            DependencyService.Register<MockDataStore>();
             DependencyService.Register<TumblrTalker>();
             MainPage = new AppShell();
         }
