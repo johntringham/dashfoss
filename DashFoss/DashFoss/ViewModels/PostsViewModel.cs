@@ -32,10 +32,6 @@ namespace DashFoss.ViewModels
 
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            ItemTapped = new Command<Item>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem);
-
             tumblrTalker = DependencyService.Get<TumblrTalker>();
         }
 
@@ -77,32 +73,7 @@ namespace DashFoss.ViewModels
             if(this.Posts.Count == 0)
             {
                 IsBusy = true;
-                SelectedItem = null;
             }
-        }
-
-        public Item SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
-        private async void OnAddItem(object obj)
-        {
-            await Shell.Current.GoToAsync(nameof(NewItemPage));
-        }
-
-        async void OnItemSelected(Item item)
-        {
-            if (item == null)
-                return;
-
-            // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
         }
 
         bool loadingMorePosts = false;

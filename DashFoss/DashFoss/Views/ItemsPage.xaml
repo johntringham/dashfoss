@@ -11,9 +11,6 @@
              xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms"
              xmlns:commands="clr-namespace:DashFoss.Commands"
              x:Name="BrowseItemsPage">
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
-    </ContentPage.ToolbarItems>-->
 
     <Grid BackgroundColor="{StaticResource BehindPostColor}">
         <Grid.ColumnDefinitions>
@@ -24,7 +21,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
 
         <Label Text="{Binding BackgroundText}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource SubtleTextColor}"/>
 
@@ -42,8 +38,6 @@
                     <commands:InlineLinkClickCommand x:Key="InlineLinkClickCommand"/>
 
                     <DataTemplate x:DataType="{x:Type model:HtmlTextBit}" x:Key="HtmlTextBitDataTemplate">
-                        <!--<Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>-->
-                        <!--<Label Text="hello"/>-->
                         <Label Margin="0, 0, 0, 0" FormattedText="{Binding FormattedString}" LineBreakMode="CharacterWrap" FontSize="Medium" TextColor="{StaticResource BodyTextColor}"></Label>
                     </DataTemplate>
 
@@ -94,7 +88,6 @@
                     </DataTemplate>-->
 
                     <DataTemplate x:DataType="{x:Type model:IFrameBit}" x:Key="IFrameBitTemplate">
-                        <!--<Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>-->
                         <StackLayout>
                             <WebView Source="{Binding Url}" WidthRequest="{Binding Width}" HeightRequest="{Binding Height}"/>
                         </StackLayout>
@@ -102,8 +95,6 @@
 
                     <DataTemplate x:DataType="{x:Type model:VideoBit}" x:Key="VideoTemplate">
                         <StackLayout Orientation="Vertical" BackgroundColor="{StaticResource VideoBackgroundColor}" Padding="2">
-                            <!--<Label Text="video here :)"></Label>
-                            <Label Text="{Binding Url}"></Label>-->
                             <StackLayout.Resources>
                                 <commands:IsMutedConverter x:Key="IsMutedButtonLabelConverter"/>
                                 <commands:IsPlayingConverter x:Key="IsPlayingButtonLabelConverter"/>
@@ -118,18 +109,12 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
+                                <!--Rewind button-->
                                 <ImageButton Source="{xamlbits:CustomImageSourceExtension DashFoss.Resources.Images.rewind.svg}" BackgroundColor="Transparent" Grid.Column="0" CommandParameter="{Reference VideoPlayer}">
                                     <ImageButton.Command>
                                         <commands:RewindVideoCommand></commands:RewindVideoCommand>
                                     </ImageButton.Command>
                                 </ImageButton>
-
-                                <!--Rewind button-->
-                                <!--<Button Grid.Column="0" BackgroundColor="Blue" Margin="0" Padding="0" ImageSource="rewind.svg" CommandParameter="{Reference VideoPlayer}">
-                                    <Button.Command>
-                                        <commands:RewindVideoCommand></commands:RewindVideoCommand>
-                                    </Button.Command>
-                                </Button>-->
 
                                 <!--Play pause button-->
                                 <ImageButton Grid.Column="1" BackgroundColor="Transparent" Margin="0" Padding="0" Source="{Binding Source={Reference VideoPlayer}, Path=CurrentState, Converter={StaticResource IsPlayingButtonLabelConverter}}" CommandParameter="{Reference VideoPlayer}">
@@ -172,8 +157,6 @@
                                 </Frame.Resources>
 
                             <StackLayout Orientation="Vertical">
-
-                                <!--<BoxView HeightRequest="5" Margin="-20,0,-20,0" Color="{StaticResource BehindPostColor}"></BoxView>-->
 
                                 <StackLayout Orientation="Horizontal" HeightRequest="60" Margin="0, 0, 0, 0">
                                     <Image Source="{Binding AvatarUrl}" WidthRequest="50" HeightRequest="50" Margin="0, 0, 8, 0" VerticalOptions="CenterAndExpand"/>
