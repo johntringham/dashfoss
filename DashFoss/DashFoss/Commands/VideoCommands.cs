@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
+using Xamarin.Forms.Svg;
 
 namespace DashFoss.Commands
 {
@@ -83,11 +84,11 @@ namespace DashFoss.Commands
             var volume = (double)value;
             if (volume == 0)
             {
-                return "🔈";
+                return SVGHelper.GetSVG("volumex.svg");
             }
             else
             {
-                return "🔊";
+                return SVGHelper.GetSVG("volume2.svg");
             }
         }
 
@@ -104,11 +105,11 @@ namespace DashFoss.Commands
             var state = (MediaElementState)value;
             if (state == MediaElementState.Playing)
             {
-                return "⏸️";
+                return SVGHelper.GetSVG("pause.svg");
             }
             else
             {
-                return "▶️";
+                return SVGHelper.GetSVG("play.svg");
             }
         }
 

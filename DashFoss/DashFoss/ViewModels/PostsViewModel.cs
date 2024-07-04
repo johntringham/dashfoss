@@ -22,6 +22,8 @@ namespace DashFoss.ViewModels
 
         public TumblrTalker tumblrTalker;
 
+        public bool ShouldShowFollowButton { get; set; } = false;
+
         public PostsViewModel()
         {
             Title = "Dashboard";

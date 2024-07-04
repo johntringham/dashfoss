@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Xamarin.CommunityToolkit.Markup;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -26,11 +27,11 @@ namespace DashFoss.Models
 
         public void AddString(string str, string href = null, bool bold = false, bool italic = false, bool strike = false, bool h2 = false, bool h1=false, bool quote = false)
         {
-            var span = new Span() { Text = str, FontSize = 16 };
+            var span = new Span() { Text = HttpUtility.HtmlDecode(str), FontSize = 16 };
 
             if(href != null)
             {
-                span.ForegroundColor = Color.Crimson;
+                span.ForegroundColor = (Color)Xamarin.Forms.Application.Current.Resources["LinkTextColor"];
                 span.TextDecorations |= TextDecorations.Underline;
 
                 span.GestureRecognizers.Add(new TapGestureRecognizer() { Command = LinkOpeningCommand, CommandParameter = href });
@@ -87,7 +88,6 @@ namespace DashFoss.Models
             get
             {
                 var lastSpan = this.Spans.Last();
-                lastSpan.Text = lastSpan.Text + "  "; // hack - nbsp
 
                 // todo: check if this gets hit loads. if so then we need a way of only doing this once rather than recomputing
                 var formattedString = new FormattedString();

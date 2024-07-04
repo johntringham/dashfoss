@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Shell xmlns="http://xamarin.com/schemas/2014/forms" 
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:DashFoss.Views" xmlns:viewmodels="clr-namespace:DashFoss.ViewModels"
+       xmlns:local="clr-namespace:DashFoss.Views" xmlns:viewmodels="clr-namespace:DashFoss.ViewModels" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
        Title="DashFoss"
        x:Class="DashFoss.AppShell">
 
@@ -47,31 +47,14 @@
     </Shell.Resources>
 
     <TabBar>
-        <ShellContent Title="Dashboard" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+        <ShellContent Title="Dashboard" Icon="{xamlbits:CustomImageSourceExtension box.svg}"  ContentTemplate="{DataTemplate local:ItemsPage}">
             <ShellContent.BindingContext>
                 <viewmodels:PostsViewModel/>
             </ShellContent.BindingContext>
         </ShellContent>
-        <ShellContent Title="Likes" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
+        <ShellContent Title="Likes" Icon="{xamlbits:CustomImageSourceExtension heart.svg}" ContentTemplate="{DataTemplate local:ItemsPage}">
             <ShellContent.BindingContext>
                 <viewmodels:LikesViewModel/>
-            </ShellContent.BindingContext>
-        </ShellContent>
-        <ShellContent Title="me" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="zappablamma"/>
-            </ShellContent.BindingContext>
-        </ShellContent>
-
-        <ShellContent Title="testing" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="whatdottumblrdotcom"/>
-            </ShellContent.BindingContext>
-        </ShellContent>
-
-        <ShellContent Title="hungwy" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}">
-            <ShellContent.BindingContext>
-                <viewmodels:OneBlogPostsViewModel blog="hungwy"/>
             </ShellContent.BindingContext>
         </ShellContent>
     </TabBar>

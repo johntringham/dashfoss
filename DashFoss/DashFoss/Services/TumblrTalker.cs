@@ -50,6 +50,28 @@ namespace DashFoss.Services
             return parsed;
         }
 
+        public async Task<bool> DoesFollow(string blog)
+        {
+            try
+            {
+                //var userInfo = await client.GetUserInfoAsync();
+
+                //var pfollowsz = await client.GetAreYouFollowing("pukicho");
+                //var followPizza = await client.GetAreYouFollowing("kitzenvoncatzen");
+                //var zfollowsp = await client.GetFollowedByAsync("pukicho", "zappablamma");
+
+                return false;
+
+                //var following = await client.GetFollowingAsync(0, );
+                //return following.Result.Any(f => f.Name == blog);
+            }
+            catch (Exception e)
+            {
+                await DisplayErrorMessage();
+                return false;
+            }
+        }
+
         private static async Task DisplayErrorMessage()
         {
             await Shell.Current.CurrentPage.DisplayAlert("aw man", "connection failed... :(", "ok");
@@ -131,6 +153,27 @@ namespace DashFoss.Services
             {
                 await DisplayErrorMessage();
                 return new List<TumblrPost>();
+            }
+        }
+
+        public async Task<TumblrPost> LoadNotes(TumblrPost post)
+        {
+            try
+            {
+                var noteType = NoteType.Reply;
+
+                var replies = await this.client.GetNotes(post.BasePost.BlogName, long.Parse(post.Id), "replies");
+                post.Replies = replies.Result.ToList();
+
+                var reblogs = await this.client.GetNotes(post.BasePost.BlogName, long.Parse(post.Id), "reblogs_with_tags");
+                post.ReblogNotes = reblogs.Result.ToList();
+
+                return post;
+            }
+            catch (Exception ex)
+            {
+                await DisplayErrorMessage();
+                return post;
             }
         }
 
@@ -257,7 +300,7 @@ namespace DashFoss.Services
                     break;
             }
 
-            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, Notes = post.NotesCount, RebloggedFrom = post.RebloggedFromName, Tags = post.Tags.ToList(), BasePost = post };
+            return new TumblrPost() { Author = post.BlogName, Bits = bits, Id = post.Id, NotesCount = post.NotesCount, RebloggedFrom = post.RebloggedFromName, Tags = post.Tags.ToList(), BasePost = post };
         }
 
         private IEnumerable<PostBit> ParseTextPost(TextPost p)
@@ -431,6 +474,17 @@ namespace DashFoss.Services
                 }
             }
         }
+
+        internal Task UnfollowBlog(string blog)
+        {
+            return this.client.UnfollowAsync(blog);
+        }
+
+        internal Task FollowBlog(string blog)
+        {
+            return this.client.FollowAsync(blog);
+        }
+
         //content = content.Replace("<p>", "");
         //content = content.Replace("</p>", "<br />");
 

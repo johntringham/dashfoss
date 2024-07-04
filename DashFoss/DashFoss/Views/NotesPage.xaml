@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:DashFoss.ViewModels" xmlns:client="clr-namespace:DontPanic.TumblrSharp.Client" xmlns:commands="clr-namespace:DashFoss.Commands" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
+             x:Class="DashFoss.Views.NotesPage"
+             BackgroundColor="{StaticResource BehindPostColor}"
+             BarBackgroundColor="{StaticResource Primary}"
+             Title="Notes"
+             x:DataType="local:NotesViewModel">
+
+    <ContentPage Title="Replies" BackgroundColor="{StaticResource BehindPostColor}">
+            <StackLayout>
+            <Label Text="{Binding Replies.Count, StringFormat='{}{0} replies'}" HorizontalTextAlignment="Center" Margin="10" TextColor="{StaticResource SubtleTextColor}"/>
+            <CollectionView x:Name="ItemsListView"
+                        ItemsSource="{Binding Replies}"
+                        ItemSizingStrategy="MeasureAllItems"
+                        SelectionMode="None">
+
+                    <CollectionView.Resources>
+                        <commands:OpenBlogCommand x:Key="OpenBlogCommand"/>
+                    </CollectionView.Resources>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="client:BaseNote" >
+                            <Frame Padding="5" BackgroundColor="{DynamicResource BehindPostColor}">
+                                <Frame Padding="10, 6, 10, 6" BackgroundColor="{DynamicResource Background}" CornerRadius="10">
+                                    <StackLayout>
+                                        <Grid Padding="0" Margin="0,2,0,2">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding BlogName}"/>
+                                            </Grid.GestureRecognizers>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="22"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Aspect="AspectFill" HeightRequest="22" WidthRequest="22" Source="{Binding ProfilePictureUrl}"/>
+                                            <Label Padding="0" Margin="7,0,0,0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding BlogName}"></Label>
+                                        </Grid>
+                                        <Label Text="{Binding ReplyText}"/>
+                                    </StackLayout>
+                                </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+    </ContentPage>
+
+    <ContentPage Title="Reblogs" BackgroundColor="{StaticResource BehindPostColor}">
+        <StackLayout>
+            <Label Text="{Binding Reblogs.Count, StringFormat='{}{0} reblogs'}" HorizontalTextAlignment="Center" Margin="10" TextColor="{StaticResource SubtleTextColor}"/>
+            <CollectionView x:Name="ReblogsView"
+                 ItemsSource="{Binding Reblogs}"
+                 ItemSizingStrategy="MeasureAllItems"
+                 SelectionMode="None">
+
+                <CollectionView.Resources>
+                    <commands:OpenBlogCommand x:Key="OpenBlogCommand"/>
+                </CollectionView.Resources>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="client:BaseNote" >
+                        <Frame Padding="5" BackgroundColor="{DynamicResource BehindPostColor}">
+                            <Frame Padding="10, 6, 10, 6" BackgroundColor="{DynamicResource Background}" CornerRadius="10">
+                                <StackLayout Orientation="Vertical">
+
+                                <FlexLayout >
+                                    <Grid Padding="0" Margin="0,2,0,2">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding BlogName}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="22"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Aspect="AspectFill" HeightRequest="22" WidthRequest="22" Source="{Binding ProfilePictureUrl}"/>
+                                        <Label Padding="0" Margin="7,0,0,0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding BlogName}"></Label>
+                                    </Grid>
+                                    
+                                    <Image Scale="0.6" Source="{xamlbits:CustomImageSourceExtension reblog.svg}"></Image>
+                                    
+                                    <Grid Padding="0" Margin="0,2,0,2">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding BlogName}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="22"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Aspect="AspectFill" HeightRequest="22" WidthRequest="22" Source="{Binding ReblogParentProfilePictureUrl}"/>
+                                        <Label Padding="0" Margin="7,0,0,0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding ReblogParentBlogName}"></Label>
+                                    </Grid>
+
+                                    </FlexLayout>
+                                    
+                                    <Label Text="{Binding TagsAsString}"/>
+
+                                </StackLayout>
+                            </Frame>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>

@@ -2,6 +2,7 @@
 using DashFoss.Services;
 using DashFoss.ViewModels;
 using DashFoss.Views;
+using DontPanic.TumblrSharp.Client;
 using Flurl;
 using System;
 using System.Collections.Generic;
@@ -51,11 +52,11 @@ namespace DashFoss.Commands
             var liked = (bool)value;
             if (liked)
             {
-                return "❤";
+                return SVGHelper.GetSVG("filledheart.svg");
             }
             else
             {
-                return "🤍";
+                return SVGHelper.GetSVG("heart.svg");
             }
         }
 
@@ -96,6 +97,31 @@ namespace DashFoss.Commands
             page.BindingContext = new OneBlogPostsViewModel() { blog = (string) parameter };
             
             Shell.Current.Navigation.PushAsync(page);
+        }
+    }
+
+    public class OpenNotesCommand : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public async void Execute(object parameter)
+        {
+
+            var tumblrTalker = DependencyService.Get<TumblrTalker>();
+            var page = new NotesPage();
+            var post = (TumblrPost)parameter;
+
+            var tumblrLoadTask = tumblrTalker.LoadNotes(post);
+
+            await Shell.Current.Navigation.PushAsync(page);
+            await tumblrLoadTask;
+
+            page.BindingContext = new NotesViewModel() { Post = post };
         }
     }
 }

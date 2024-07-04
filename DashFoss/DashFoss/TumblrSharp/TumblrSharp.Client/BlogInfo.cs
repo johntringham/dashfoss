@@ -86,5 +86,29 @@ namespace DontPanic.TumblrSharp.Client
         /// </summary>
         [JsonProperty(PropertyName = "subscribed")]
         public bool Subscribed { get; set; }
+
+        /// <summary>
+        /// Subscribed
+        /// </summary>
+        [JsonProperty(PropertyName = "is_following_you")]
+        public bool IsFollowingYou { get; set; }
+
+        /// <summary>
+		/// Time in seconds this blog has been following you
+		/// </summary>
+        [JsonProperty(PropertyName = "duration_blog_following_you")]
+        public long DurationBlogFollowingYou { get; set; }
+
+        /// <summary>
+		/// Time in seconds you've been following this blog
+		/// </summary>
+        [JsonProperty(PropertyName = "duration_following_blog")]
+        public long DurationFollowingBlog { get; set; }
+
+        /// <summary>
+		/// Whether you are following this blog
+		/// </summary>
+        [JsonProperty(PropertyName = "followed")]
+        public bool Followed { get; set; }
     }
 }

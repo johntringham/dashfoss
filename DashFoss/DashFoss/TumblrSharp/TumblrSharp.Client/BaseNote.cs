@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace DontPanic.TumblrSharp.Client
@@ -75,8 +76,18 @@ namespace DontPanic.TumblrSharp.Client
 		[JsonProperty(PropertyName = "reblog_parent_blog_name")]
 		public string ReblogParentBlogName { get; set; }
 
-		/// <inheritdoc/>
-		public override bool Equals(object obj)
+        [JsonProperty(PropertyName = "tags")]
+        public string[] Tags { get; set; }
+
+		public string TagsAsString { get
+			{
+				if(Tags == null || Tags.Length < 1) { return ""; }
+				return string.Join(" ", this.Tags.Select(t => "#"+t));
+			}
+		}
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
 		{
 			return obj is BaseNote note &&
 				   Type == note.Type &&
@@ -91,8 +102,11 @@ namespace DontPanic.TumblrSharp.Client
 				   ReblogParentBlogName == note.ReblogParentBlogName;
 		}
 
-		/// <inheritdoc/>
-		public override int GetHashCode()
+		public string ProfilePictureUrl => $"https://api.tumblr.com/v2/blog/{BlogName}/avatar/48";
+		public string ReblogParentProfilePictureUrl => $"https://api.tumblr.com/v2/blog/{ReblogParentBlogName}/avatar/48";
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
 		{
 			var hashCode = 1122491329;
 			hashCode = hashCode * -1521134295 + Type.GetHashCode();

@@ -6,25 +6,36 @@
              xmlns:local="clr-namespace:DashFoss.ViewModels"  
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:model="clr-namespace:DashFoss.Models" xmlns:xamlbits="clr-namespace:DashFoss.XamlBits" xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms" xmlns:commands="clr-namespace:DashFoss.Commands"
+             xmlns:model="clr-namespace:DashFoss.Models"
+             xmlns:xamlbits="clr-namespace:DashFoss.XamlBits"
+             xmlns:imagefillwidthforms="clr-namespace:ImageFillWidthForms"
+             xmlns:commands="clr-namespace:DashFoss.Commands"
              x:Name="BrowseItemsPage">
-
     <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>-->
 
     <Grid BackgroundColor="{StaticResource BehindPostColor}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions> 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
 
-        
-        <Label Text="just loading 1 sec :)" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource SubtleTextColor}"/>
-        
-        <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView">
+        <Label Text="{Binding BackgroundText}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource SubtleTextColor}"/>
+
+        <RefreshView x:DataType="local:PostsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}" x:Name="PostsRefreshView"
+                     Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <CollectionView x:Name="ItemsListView"
                     ItemsSource="{Binding Posts}"
                             ItemSizingStrategy="MeasureAllItems"
                     SelectionMode="None">
 
-                 <CollectionView.Resources>
+                <CollectionView.Resources>
 
                     <commands:OpenBlogCommand x:Key="OpenBlogCommand"/>
 
@@ -32,11 +43,12 @@
 
                     <DataTemplate x:DataType="{x:Type model:HtmlTextBit}" x:Key="HtmlTextBitDataTemplate">
                         <!--<Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>-->
-                        <Label Margin="0, 0, 10, 0" FormattedText="{Binding FormattedString}" FontSize="Medium" TextColor="{StaticResource BodyTextColor}"></Label>
+                        <!--<Label Text="hello"/>-->
+                        <Label Margin="0, 0, 0, 0" FormattedText="{Binding FormattedString}" LineBreakMode="CharacterWrap" FontSize="Medium" TextColor="{StaticResource BodyTextColor}"></Label>
                     </DataTemplate>
 
                     <DataTemplate x:DataType="{x:Type model:ImageBit}" x:Key="ImageDataTemplate">
-                        <StackLayout Orientation="Vertical" Padding="0,5" Margin="0,0,0,0">
+                        <StackLayout Orientation="Vertical" Margin="0, 5">
                             <imagefillwidthforms:AspectRatioContainer PhotoInfo="{Binding Photo}" Padding="0" Margin="0">
                                 <Grid BackgroundColor="{StaticResource BehindPostColor}">
                                     <Image Source="{Binding Url}" IsAnimationPlaying="True"/>
@@ -56,7 +68,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image Aspect="AspectFill" HeightRequest="22" WidthRequest="22" Source="{Binding ProfilePictureUrl}"/>
-                            <Label Padding="0" Margin="0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding BlogName}"></Label>
+                            <Label Padding="0" Margin="7,0,0,0" FontAttributes="Bold" FontSize="Subtitle" Grid.Column="1" Text="{Binding BlogName}"></Label>
                         </Grid>
                     </DataTemplate>
 
@@ -73,7 +85,9 @@
                     </DataTemplate>
 
                     <!--<DataTemplate x:DataType="{x:Type model:AudioBit}" x:Key="AudioBitTemplate">
-                        --><!--<Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>--><!--
+                        -->
+                    <!--<Label Text="{Binding html}" FontSize="Medium" TextType="Html"></Label>-->
+                    <!--
                         <StackLayout>
                             <WebView Source="{Binding Url}" WidthRequest="400" HeightRequest="400"/>
                         </StackLayout>
@@ -94,38 +108,43 @@
                                 <commands:IsMutedConverter x:Key="IsMutedButtonLabelConverter"/>
                                 <commands:IsPlayingConverter x:Key="IsPlayingButtonLabelConverter"/>
                             </StackLayout.Resources>
-                        
-                            <xct:MediaElement IsLooping="True" Volume="0" AutoPlay="False" ShowsPlaybackControls="False" Source="{Binding Url}" WidthRequest="400" HeightRequest="400" x:Name="VideoPlayer"/>
-                        
-                            <Grid>
+
+                            <xct:MediaElement IsLooping="True" Volume="0" AutoPlay="True" ShowsPlaybackControls="False" Source="{Binding Url}" WidthRequest="400" HeightRequest="400" x:Name="VideoPlayer"/>
+
+                            <Grid HeightRequest="30" Margin="10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
+                                <ImageButton Source="{xamlbits:CustomImageSourceExtension DashFoss.Resources.Images.rewind.svg}" BackgroundColor="Transparent" Grid.Column="0" CommandParameter="{Reference VideoPlayer}">
+                                    <ImageButton.Command>
+                                        <commands:RewindVideoCommand></commands:RewindVideoCommand>
+                                    </ImageButton.Command>
+                                </ImageButton>
+
                                 <!--Rewind button-->
-                                <Button Grid.Column="0" Margin="0" Padding="0" Text="⏪" CommandParameter="{Reference VideoPlayer}">
+                                <!--<Button Grid.Column="0" BackgroundColor="Blue" Margin="0" Padding="0" ImageSource="rewind.svg" CommandParameter="{Reference VideoPlayer}">
                                     <Button.Command>
                                         <commands:RewindVideoCommand></commands:RewindVideoCommand>
                                     </Button.Command>
-                                </Button>
+                                </Button>-->
 
                                 <!--Play pause button-->
-                                <Button Grid.Column="1" Margin="0" Padding="0" Text="{Binding Source={Reference VideoPlayer}, Path=CurrentState, Converter={StaticResource IsPlayingButtonLabelConverter}}" CommandParameter="{Reference VideoPlayer}">
-                                    <Button.Command>
+                                <ImageButton Grid.Column="1" BackgroundColor="Transparent" Margin="0" Padding="0" Source="{Binding Source={Reference VideoPlayer}, Path=CurrentState, Converter={StaticResource IsPlayingButtonLabelConverter}}" CommandParameter="{Reference VideoPlayer}">
+                                    <ImageButton.Command>
                                         <commands:PauseVideoCommand></commands:PauseVideoCommand>
-                                    </Button.Command>
-                                </Button>
+                                    </ImageButton.Command>
+                                </ImageButton>
 
                                 <!--Mute unmute button-->
-                                <Button Grid.Column="2" Margin="0" Padding="0" Text="{Binding Source={Reference VideoPlayer}, Path=Volume, Converter={StaticResource IsMutedButtonLabelConverter}}" CommandParameter="{Reference VideoPlayer}">
-                                    <Button.Command>
+                                <ImageButton Grid.Column="2" BackgroundColor="Transparent" Margin="0" Padding="0" Source="{Binding Source={Reference VideoPlayer}, Path=Volume, Converter={StaticResource IsMutedButtonLabelConverter}}" CommandParameter="{Reference VideoPlayer}">
+                                    <ImageButton.Command>
                                         <commands:MuteVideoCommand></commands:MuteVideoCommand>
-                                    </Button.Command>
-                                </Button>
-                                <Button Grid.Column="3" Margin="0" Padding="0" Text="⛶"/>
+                                    </ImageButton.Command>
+                                </ImageButton>
+                                
                             </Grid>
 
                         </StackLayout>
@@ -141,21 +160,23 @@
 
                     </xamlbits:PostBitDataTemplateSelector>
                 </CollectionView.Resources>
-            
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10, 6, 10, 6" BackgroundColor="{StaticResource PostBackground}" x:DataType="model:TumblrPost">
+                        <Frame Padding="5" BackgroundColor="{DynamicResource BehindPostColor}">
+                            <Frame Padding="10, 6, 10, 6" BackgroundColor="{DynamicResource PostBackground}" x:DataType="model:TumblrPost">
                             <Frame.Resources>
-                                <commands:IsLikedConverter x:Key="IsLikedConverter"/>
-                                <commands:LikePostCommand x:Key="LikePostCommand"/>
-                            </Frame.Resources>
+                                    <commands:IsLikedConverter x:Key="IsLikedConverter"/>
+                                    <commands:LikePostCommand x:Key="LikePostCommand"/>
+                                    <commands:OpenNotesCommand x:Key="OpenNotesCommand"/>
+                                </Frame.Resources>
 
                             <StackLayout Orientation="Vertical">
 
-                                <BoxView HeightRequest="5" Margin="-20,0,-20,0" Color="{StaticResource BehindPostColor}"></BoxView>
+                                <!--<BoxView HeightRequest="5" Margin="-20,0,-20,0" Color="{StaticResource BehindPostColor}"></BoxView>-->
 
-                                <StackLayout Orientation="Horizontal" HeightRequest="60">
-                                    <Image Source="{Binding AvatarUrl}" WidthRequest="50" HeightRequest="50" VerticalOptions="CenterAndExpand"/>
+                                <StackLayout Orientation="Horizontal" HeightRequest="60" Margin="0, 0, 0, 0">
+                                    <Image Source="{Binding AvatarUrl}" WidthRequest="50" HeightRequest="50" Margin="0, 0, 8, 0" VerticalOptions="CenterAndExpand"/>
                                     <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand">
                                         <Label
                                         Text="{Binding Author}"
@@ -168,11 +189,14 @@
                                                 <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding Author}"/>
                                             </Label.GestureRecognizers>
                                         </Label>
-                                        <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom, StringFormat='🔁 {0}'}" IsVisible="{Binding WasReblogged}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding RebloggedFrom}"/>
-                                            </Label.GestureRecognizers>
-                                        </Label>
+                                        <StackLayout Orientation="Horizontal" IsVisible="{Binding WasReblogged}">
+                                            <Image Scale="0.6" Source="{xamlbits:CustomImageSourceExtension reblog.svg}"></Image>
+                                            <Label VerticalTextAlignment="Center" Text="{Binding RebloggedFrom}">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{StaticResource OpenBlogCommand}" CommandParameter="{Binding RebloggedFrom}"/>
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </StackLayout>
                                     </StackLayout>
                                     <Label Text="➽" Margin="0,0,10,0" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" TextColor="{StaticResource SubtleTextColor}">
                                         <Label.GestureRecognizers>
@@ -190,23 +214,35 @@
                                     <Label TextColor="{StaticResource SubtleTextColor}" FontSize="13" LineBreakMode="NoWrap" Text="{Binding AllTags}"></Label>
                                 </ScrollView>
 
-                                <Grid>
+                                <Grid Padding="0,0,5,5" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Text="{Binding Notes,StringFormat='{}{0:N0} notes'}" FontSize="Small" TextColor="{StaticResource SubtleTextColor}"/>
-                                    <Label Grid.Column="1" VerticalTextAlignment="Center" Text="{Binding Liked, Converter={StaticResource IsLikedConverter}}" TextColor="{StaticResource SubtleTextColor}" Margin="0,0,10,0">
-                                        <Label.GestureRecognizers>
+                                        <Label Grid.Column="0" VerticalOptions="Center" Text="{Binding NotesCount,StringFormat='{}{0:N0} notes'}" FontSize="Small" TextColor="{StaticResource SubtleTextColor}">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{StaticResource OpenNotesCommand}" CommandParameter="{Binding}"/>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Image Grid.Column="1" WidthRequest="25" Source="{Binding Liked, Converter={StaticResource IsLikedConverter}}">
+                                        <Image.GestureRecognizers>
                                             <TapGestureRecognizer Command="{StaticResource LikePostCommand}" CommandParameter="{Binding}" />
-                                        </Label.GestureRecognizers>
-                                    </Label>
+                                        </Image.GestureRecognizers>
+                                    </Image>
                                 </Grid>
                             </StackLayout>
+                        </Frame>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+
+
+        <Button IsVisible="{Binding ShouldShowFollowButton}"
+                Text="{Binding FollowButtonText}"
+                Grid.Row="0" Grid.Column="1"
+                BackgroundColor="{StaticResource Primary}" Margin="5" Command="{Binding FollowUnfollowButtonCommand}">
+        </Button>
     </Grid>
 </ContentPage>

@@ -13,7 +13,7 @@ namespace DashFoss.Models
 
         public string Id { get; set; }
 
-        public long Notes { get; set; }
+        public long NotesCount { get; set; }
 
         public List<PostBit> Bits { get; set; }
 
@@ -32,6 +32,9 @@ namespace DashFoss.Models
         public string AllTags => string.Join(" ", Tags.Select(t => "#" + t));
 
         public bool GotTags => Tags.Count > 0;
+
+        public List<BaseNote> Replies { get; set; } = new List<BaseNote>();
+        public List<BaseNote> ReblogNotes { get; set; } = new List<BaseNote>();
 
         public bool Liked
         { 
