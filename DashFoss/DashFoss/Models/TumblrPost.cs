@@ -40,7 +40,7 @@ namespace DashFoss.Models
         { 
             get
             {
-                return BasePost.Liked == "True"; // ???
+                return BasePost.Liked == "True";
             }
             set
             {

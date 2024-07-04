@@ -30,7 +30,6 @@ namespace DashFoss.XamlBits
 
             if (!Source.StartsWith("DashFoss"))
             {
-                // get around xamarin being designed by idiots who get paid by the letter
                 Source = "DashFoss.Resources.Images." + Source;
             }
 
@@ -39,7 +38,6 @@ namespace DashFoss.XamlBits
                 return SvgImageSource.FromSvgResource(Source);
             }
 
-            // Do your translation lookup here, using whatever method you require
             var imageSource = ImageSource.FromResource(Source, typeof(CustomImageSourceExtension).GetTypeInfo().Assembly);
 
             return imageSource;

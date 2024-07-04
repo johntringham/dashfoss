@@ -54,16 +54,15 @@ namespace DashFoss.Services
         {
             try
             {
-                //var userInfo = await client.GetUserInfoAsync();
+                // todo: the API does not expose this in a easy-to-read way.
 
+                // previous attempts:
+                //var userInfo = await client.GetUserInfoAsync();
                 //var pfollowsz = await client.GetAreYouFollowing("pukicho");
                 //var followPizza = await client.GetAreYouFollowing("kitzenvoncatzen");
                 //var zfollowsp = await client.GetFollowedByAsync("pukicho", "zappablamma");
 
                 return false;
-
-                //var following = await client.GetFollowingAsync(0, );
-                //return following.Result.Any(f => f.Name == blog);
             }
             catch (Exception e)
             {
@@ -96,7 +95,7 @@ namespace DashFoss.Services
         {
             try
             {
-                var posts = (await client.GetPostsAsync(blogName, includeReblogInfo: true)).Result; // note: not an async hack - just some dumb classes
+                var posts = (await client.GetPostsAsync(blogName, includeReblogInfo: true)).Result; // note: ".Result" is not an async hack - just some unfortunate naming
 
                 var parsed = posts.Select(p => ParsePost(p));
                 return parsed;
@@ -128,7 +127,7 @@ namespace DashFoss.Services
         {
             try
             {
-                var posts = (await client.GetLikesAsync()).Result; // note: not an async hack - just some dumb classes
+                var posts = (await client.GetLikesAsync()).Result; // note: ".Result" is not an async hack - just some unfortunate naming
                 var parsed = posts.Select(p => ParsePost(p));
                 return parsed;
             }
@@ -220,7 +219,6 @@ namespace DashFoss.Services
         private TumblrPost ParsePost(BasePost post)
         {
             var bits = new List<PostBit>();
-            //bits.Add(new HtmlTextBit() { html = $"{post.GetType().Name} - {post.BlogName} " });
 
             switch (post)
             {
@@ -234,13 +232,10 @@ namespace DashFoss.Services
                     //ParseTumblrHtml(bits, p.Caption);
                     ParseTrails(bits, p.Trails);
 
-                    //bits.Add(new HtmlTextBit() { html = p.Caption });
-
                     break;
 
                 case TextPost p:
                     bits.AddRange(ParseTextPost(p).ToList());
-                    //bits.Add(new HtmlTextBit() { html = p.Body });
                     break;
 
                 case VideoPost p:
@@ -484,75 +479,5 @@ namespace DashFoss.Services
         {
             return this.client.FollowAsync(blog);
         }
-
-        //content = content.Replace("<p>", "");
-        //content = content.Replace("</p>", "<br />");
-
-        //var doc = new HtmlAgilityPack.HtmlDocument();
-        //doc.LoadHtml(content);
-
-        //var documentNode = doc.DocumentNode;
-        //var nodesToInspect = new Stack<HtmlNode>();
-        //nodesToInspect.Push(documentNode);
-
-        //while (nodesToInspect.Count > 0)
-        //{
-        //    var node = nodesToInspect.Pop();
-        //    if (node.Name == "img")
-        //    {
-        //        var width = node.GetAttributeValue("data-orig-width", 100);
-        //        var height = node.GetAttributeValue("data-orig-height", 100);
-        //        bits.Add(new ImageBit(node.GetAttributeValue("src", ""), "text post image", new PhotoInfo() { Height = height, Width = width }));
-        //    }
-        //    else if (node.Name == "#text")
-        //    {
-        //        var text = node.GetDirectInnerText();
-        //        if (text != null && text != "")
-        //        {
-        //            bits.Add(new HtmlTextBit() { html = text });
-        //        }
-        //    }
-        //    else if (node.Name == "a")
-        //    {
-        //        var text = node.GetDirectInnerText();
-        //        if (text != null && text != "")
-        //        {
-        //            bits.Add(new HtmlTextBit() { html = "LINK:" + node.OuterHtml });
-        //        }
-        //    }
-        //    else if (node.Name == "figure")
-        //    {
-        //        var npfData = node.GetAttributeValue("data-npf", "");
-        //        if (npfData != null && npfData != "")
-        //        {
-        //            npfData = npfData.Replace("&quot;", "\"");
-        //            var json = JObject.Parse(npfData);
-        //            string figureType = json.SelectToken("type").Value<string>();
-        //            string url = json.SelectToken("url").Value<string>();
-
-        //            if (figureType == "video")
-        //            {
-        //                bits.Add(new VideoBit(url));
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (var child in node.ChildNodes.Reverse())
-        //            {
-        //                nodesToInspect.Push(child);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        foreach (var child in node.ChildNodes.Reverse())
-        //        {
-        //            nodesToInspect.Push(child);
-        //        }
-        //    }
-        //}
-
-        //return content;
-        //}
     }
 }

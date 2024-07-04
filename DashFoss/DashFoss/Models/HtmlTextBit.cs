@@ -11,8 +11,6 @@ namespace DashFoss.Models
 {
     public class HtmlTextBit : PostBit
     {
-        //public string html { get; set; }
-
         private static InlineLinkClickCommand LinkOpeningCommand = new InlineLinkClickCommand();
 
         public HtmlTextBit(params Span[] spans)
@@ -65,7 +63,7 @@ namespace DashFoss.Models
             if (quote)
             {
                 // todo: this is a bit rubbish. this fake parser can't cope well with this for blockquotes.
-                // better soloution is to put blockquotes as a different HtmlTextBit, and not bundle them in with the other formatting stuff
+                // better solution is to put blockquotes as a different HtmlTextBit, and not bundle them in with the other formatting stuff
                 // can't do indenting this way because any margin/padding changes would be applied to all spans inside the blockquote, which is not what we want
                 span.FontSize *= 0.9d;
                 span.LineHeight *= 1.3d;
